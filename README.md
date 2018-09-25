@@ -14,6 +14,10 @@ I am `jann`, a retreival-based chatbot baseline.
 
 The goal of `jann` is to be a descriptive code sample which explicitly describes each step of the process of building a semantic similarity retrieval-based text chatbot. It is designed to be able to use any text as input (e.g. Facebook messages, tweets, emails, movie lines, speeches, restaurant reviews, ...) so long as it is collected in a single text file, ready for processing.
 
+The example code here uses the first 50 lines from the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html). You can set the number of lines from the corpus you want to use by changing the parameter `export NUMLINES='2048'` in `run_CMDC.sh`.
+
+If you want to use your own dataset, you can change the line `export PATHTXT="data/CMDC/all_lines_50.txt"` in `run.sh`. Make sure that your source text has a single entry on every line.
+
 ## Install and configure requirements
 
 ```sh
