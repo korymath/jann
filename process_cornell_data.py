@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 
 
 def main(arguments):
@@ -24,7 +25,7 @@ def main(arguments):
 
   with open(output_fname, 'w') as f:
     if num_lines != 0:
-      for item in lines[:num_lines]:
+      for item in np.random.choice(lines, num_lines, replace=False):
         f.write("%s\n" % item)
     else:
       for item in lines:

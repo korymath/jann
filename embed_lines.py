@@ -21,7 +21,7 @@ def main(arguments):
   if args.verbose:
     tf.logging.set_verbosity(tf.logging.DEBUG)
   else:
-    tf.logging.set_verbosity(tf.logging.INFO)
+    tf.logging.set_verbosity(tf.logging.WARN)
 
   # Build the input message list
   lines = load_data(args.infile, 'list')
