@@ -1,0 +1,1 @@
+web: gunicorn serve_model:app

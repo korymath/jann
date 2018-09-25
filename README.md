@@ -1,8 +1,10 @@
 # jann
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 I am `jann`, a retreival-based chatbot baseline.
 
-`jann` uses approximate nearest neighbor, using [Spotify's Annoy (Apache License 2.0)](https://github.com/spotify/annoy) library, over a distributed semantic embedding space as defined by [Google's Universal Sentence Encoder (code: Apache License 2.0)](https://alpha.tfhub.dev/google/universal-sentence-encoder/2) from TensorFlow Hub.
+`jann` uses approximate nearest neighbor, using [Spotify's Annoy (Apache License 2.0)](https://github.com/spotify/annoy) library, over a distributed semantic embedding space as defined by [Google's Universal Sentence Encoder (code: Apache License 2.0)](https://alpha.tfhub.dev/google/universal-sentence-encoder/2) from [TensorFlow Hub](https://www.tensorflow.org/hub/).
 
 The goal of `jann` is to be a descriptive code sample which explicitly describes each step of the process of building a semantic similarity retrieval-based text chatbot. It is designed to be able to use any text as input (e.g. Facebook messages, tweets, emails, movie lines, speeches, restaurant reviews, ...) so long as it is collected in a single text file, ready for processing.
 
@@ -39,22 +41,20 @@ For interaction with the model, the only files needed are the unique strings (`_
 
 ## Issues
 
-Error/Warning
+### Error/Warning
 ```sh
 /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:205: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
   return f(*args, **kwds)
 ```
-
 Solution (for OSX 10.13):
 ```sh
 pip install --ignore-installed --upgrade https://github.com/lakshayg/tensorflow-build/releases/download/tf1.9.0-macos-py27-py36/tensorflow-1.9.0-cp36-cp36m-macosx_10_13_x86_64.whl
 ```
 
-Error/Warning:
+### Error/Warning:
 ```sh
 FileNotFoundError: [Errno 2] No such file or directory: 'data/CMDC/movie_lines.txt'
 ```
-
 Solution:
 ```sh
 Ensure that the input movie lines file is extracted to the correct path
@@ -63,6 +63,8 @@ Ensure that the input movie lines file is extracted to the correct path
 ## Credits
 
 `jann` is made with love by [Kory Mathewson](https://korymathewson.com).
+
+Icon made by [Freepik](http://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/).
 
 
 # Notes:

@@ -1,5 +1,6 @@
 import os
 import io
+import random
 import pickle
 import hashlib
 import numpy as np
@@ -7,6 +8,7 @@ from tqdm import tqdm
 import tensorflow as tf
 import sentencepiece as spm
 import tensorflow_hub as hub
+from annoy import AnnoyIndex
 
 # Specify the local module path
 MODULE_PATH = 'https://tfhub.dev/google/universal-sentence-encoder-lite/2'
@@ -114,3 +116,83 @@ def embed_lines(args, unencoded_lines, output_dict):
                                                 'line_embedding': line_embedding}
   return output_dict
 
+class GenModelUSE():
+
+    def __init__(self, annoy_index_path, unique_strings):
+        self.annoy_index_path = annoy_index_path
+        self.unique_strings = unique_strings
+
+        # load the annoy index for mmap speed
+        # Length of item vector that will be indexed
+        self.annoy_index = AnnoyIndex(512)
+
+        # super fast, will just mmap the file
+        self.annoy_index.load(self.annoy_index_path)
+
+        g = tf.Graph()
+        with g.as_default():
+          # define the module
+          module = hub.Module(MODULE_PATH, trainable=False)
+          # build an input placeholder
+          self.input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
+          # build an input / output from the placeholders
+          self.embeddings = module(inputs=dict(
+              values=self.input_placeholder.values,
+              indices=self.input_placeholder.indices,
+              dense_shape=self.input_placeholder.dense_shape
+            )
+          )
+          init_op = tf.group([tf.global_variables_initializer(), tf.tables_initializer()])
+
+        # do not finalize the graph as we are going to modify it with the spm_path
+        # g.finalize()
+
+        self.sess = tf.Session(graph=g)
+        self.sess.run(init_op)
+
+        # spm_path now contains a path to the SentencePiece
+        # model stored inside the TF-Hub module
+        with g.as_default():
+          spm_path = self.sess.run(module(signature="spm_path"))
+        self.sp = spm.SentencePieceProcessor()
+        self.sp.Load(spm_path)
+
+        tf.logging.info('Interactive session is initialized...')
+
+    def inference(self, input_text):
+        """Inference from nearest neighbor model."""
+        tf.logging.info('Input text: {}'.format(input_text))
+
+        # Build a list of the user input
+        user_input = [input_text]
+
+        # process unencoded lines to values and IDs in sparse format
+        values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=self.sp,
+          sentences=user_input)
+
+        # run the session
+        # Get embedding of the input text
+        embeddings = self.sess.run(
+          self.embeddings,
+          feed_dict={
+            self.input_placeholder.values: values,
+            self.input_placeholder.indices: indices,
+            self.input_placeholder.dense_shape: dense_shape
+          }
+        )
+
+        tf.logging.info('Successfully generated {} embeddings of length {}.'.format(len(embeddings),
+            len(embeddings[0])))
+
+        # Extract the query vector of interest.
+        query_vector = embeddings[0]
+
+        # Get nearest neighbors
+        nns = self.annoy_index.get_nns_by_vector(query_vector, 3,
+            search_k=-1, include_distances=False)
+        tf.logging.info('Nearest neighbor IDS: {}'.format(nns))
+
+        # Randomly sample from the top-3 nearest neighbors to avoid determinism
+        generative_response = self.unique_strings[random.choice(nns)]
+
+        return generative_response

@@ -59,7 +59,7 @@ def main(arguments):
 
     # Initialize the variables
     session.run([tf.global_variables_initializer(), tf.tables_initializer()])
-    print('Interactive session is initialized...')
+    tf.logging.info('Interactive session is initialized...')
 
     # spm_path now contains a path to the SentencePiece
     # model stored inside the TF-Hub module
@@ -108,7 +108,7 @@ def main(arguments):
         include_distances=True)
 
       for i,nn in enumerate(nns):
-        print('{}, d: {}, {}'.format(i, round(distances[i], 3), unique_strings[nn]))
+        tf.logging.info('{}, d: {}, {}'.format(i, round(distances[i], 3), unique_strings[nn]))
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
