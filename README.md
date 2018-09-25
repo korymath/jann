@@ -47,7 +47,7 @@ For interaction with the model, the only files needed are the unique strings (`_
 
 ## Issues
 
-### Error/Warning
+### Error/Warning:
 ```sh
 /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:205: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
   return f(*args, **kwds)
