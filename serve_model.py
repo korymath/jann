@@ -1,3 +1,4 @@
+import os
 import json
 import tensorflow as tf
 from annoy import AnnoyIndex
@@ -6,6 +7,8 @@ from flask import Flask, request, jsonify, abort, make_response
 from utils import GenModelUSE
 
 tf.logging.set_verbosity(tf.logging.DEBUG)
+
+os.environ["TFHUB_CACHE_DIR"] = "data/module"
 
 # Buil the USE model
 DATA_PATH = 'data/CMDC/'

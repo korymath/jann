@@ -7,7 +7,7 @@ export SEARCHK='-1'
 
 # Define the environmental variables
 export PATHTXT="data/CMDC/all_lines_50.txt"
-export TFHUB_CACHE_DIR=data/module
+export TFHUB_CACHE_DIR="data/module"
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
 python embed_lines.py ${PATHTXT} --verbose &&
