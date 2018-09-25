@@ -1,16 +1,18 @@
 # jann
 
+[Working Demo](https://korymath-jann.herokuapp.com/model_inference?msg=selfish)
+
+## Skip the cruft and let me deploy this now.
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+## Details
 
 I am `jann`, a retreival-based chatbot baseline.
 
 `jann` uses approximate nearest neighbor, using [Spotify's Annoy (Apache License 2.0)](https://github.com/spotify/annoy) library, over a distributed semantic embedding space as defined by [Google's Universal Sentence Encoder (code: Apache License 2.0)](https://alpha.tfhub.dev/google/universal-sentence-encoder/2) from [TensorFlow Hub](https://www.tensorflow.org/hub/).
 
 The goal of `jann` is to be a descriptive code sample which explicitly describes each step of the process of building a semantic similarity retrieval-based text chatbot. It is designed to be able to use any text as input (e.g. Facebook messages, tweets, emails, movie lines, speeches, restaurant reviews, ...) so long as it is collected in a single text file, ready for processing.
-
-There are two parameters for the Approximate Nearest Neighbour:
-* set `n_trees` as large as possible given the amount of memory you can afford,
-* set `search_k` as large as possible given the time constraints you have for the queries.
 
 ## Install and configure requirements
 
@@ -80,3 +82,9 @@ wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=c
 cd ${TFHUB_CACHE_DIR}
 tar -zxvf module.tar.gz
 ```
+
+## Annoy parameters
+
+There are two parameters for the Approximate Nearest Neighbour:
+* set `n_trees` as large as possible given the amount of memory you can afford,
+* set `search_k` as large as possible given the time constraints you have for the queries.
