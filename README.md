@@ -21,6 +21,8 @@ If you want to use your own dataset, you can change the line `export PATHTXT="da
 ## Install and configure requirements
 
 ```sh
+# sudo apt-get install python3-venv
+# sudo apt-get install python3-dev
 chmod +x install.sh
 ./install.sh
 ```
@@ -28,6 +30,14 @@ chmod +x install.sh
 ## Collect and prepare data
 
 Download the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html), and extract to `data/CMDC`.
+
+```sh
+cd data/CMDC/
+wget http://www.cs.cornell.edu/~cristian/data/cornell_movie_dialogs_corpus.zip
+unzip cornell_movie_dialogs_corpus.zip
+mv cornell\ movie-dialogs\ corpus/movie_lines.txt movie_lines.txt
+cd ../..
+```
 
 ## Run jann
 
