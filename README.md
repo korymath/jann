@@ -2,7 +2,7 @@
 
 [Working Demo](https://korymath-jann.herokuapp.com/model_inference?msg=selfish)
 
-## Skip the cruft and let me deploy this now.
+## Deploy on Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
