@@ -1,6 +1,7 @@
+data/CMDC/__MACOSX/
 data/CMDC/movie_lines.txt
 data/CMDC/*.*
-
+data/CMDC/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

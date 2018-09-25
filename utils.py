@@ -61,7 +61,10 @@ def embed_lines(args, unencoded_lines, output_dict):
 
   module = hub.Module(MODULE_PATH, trainable=False)
 
-  with tf.Session() as session:
+  config = tf.ConfigProto(allow_soft_placement = True)
+  # sess = tf.Session(config = config)
+
+  with tf.Session(config = config) as session:
     # initialize the variables
     session.run([tf.global_variables_initializer(), tf.tables_initializer()])
 
@@ -72,14 +75,14 @@ def embed_lines(args, unencoded_lines, output_dict):
     sp.Load(spm_path)
 
     # build an input placeholder
-    input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
-    embeddings = module(
-      inputs=dict(
+    with tf.device('/gpu:0'):
+      input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
+      embeddings = module(inputs=dict(
         values=input_placeholder.values,
         indices=input_placeholder.indices,
         dense_shape=input_placeholder.dense_shape
+      	)
       )
-    )
 
     # size of chunk is how many lines will be encoded
     # with each pass of the model

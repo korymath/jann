@@ -14,7 +14,7 @@ def main(arguments):
   parser.add_argument('infile', help="Input file")
   parser.add_argument('--verbose', dest='verbose',
                       help="Verbose", action='store_true')
-  parser.set_defaults(verbose=True)
+  parser.set_defaults(verbose=False)
   args = parser.parse_args(arguments)
 
   # Reduce logging output.

@@ -1,7 +1,7 @@
 source venv/bin/activate
 
 # Number of lines from input source to use
-export NUMLINES='32768'
+export NUMLINES='304713'
 export NUMTREES='50'
 export NUMNEIGHBORS='10'
 export SEARCHK='-1'
@@ -11,7 +11,7 @@ export PATHTXT="data/CMDC/all_lines_${NUMLINES}.txt"
 export TFHUB_CACHE_DIR=data/module
 
 # Extract the raw lines to a single file:
-python process_cornell_data.py data/CMDC/movie_lines.txt ${PATHTXT} ${NUMLINES}
+python process_cornell_data.py data/CMDC/movie_lines.txt ${PATHTXT} ${NUMLINES} &&
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
 python embed_lines.py ${PATHTXT} &&
