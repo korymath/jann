@@ -1,0 +1,13 @@
+absl-py==0.5.0
+astor==0.7.1
+gast==0.2.0
+grpcio==1.15.0
+Markdown==3.0
+numpy==1.15.2
+protobuf==3.6.1
+six==1.11.0
+tensorboard==1.10.0
+tensorflow==1.10.1
+tensorflow-hub==0.1.1
+termcolor==1.1.0
+Werkzeug==0.14.1

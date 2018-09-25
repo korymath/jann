@@ -1,0 +1,3 @@
+Module: https://tfhub.dev/google/universal-sentence-encoder-lite/2
+Download Time: 2018-09-25 11:03:54.976217
+Downloader Hostname: Korys-MacBook-Air.local (PID:10194)
