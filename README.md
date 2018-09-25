@@ -1,7 +1,8 @@
 # jann
-`jann` is an text input - text output chatbot model that is Just Approximate Nearest Neighbour.
 
-`jann` is a retreival-based chatbot baseline. It uses approximate nearest neighbor, using [Spotify's Annoy (Apache License 2.0)](https://github.com/spotify/annoy) library, over a distributed semantic embedding space as defined by [Google's Universal Sentence Encoder (code: Apache License 2.0)](https://alpha.tfhub.dev/google/universal-sentence-encoder/2) from TensorFlow Hub.
+I am `jann`, a retreival-based chatbot baseline.
+
+`jann` uses approximate nearest neighbor, using [Spotify's Annoy (Apache License 2.0)](https://github.com/spotify/annoy) library, over a distributed semantic embedding space as defined by [Google's Universal Sentence Encoder (code: Apache License 2.0)](https://alpha.tfhub.dev/google/universal-sentence-encoder/2) from TensorFlow Hub.
 
 The goal of `jann` is to be a descriptive code sample which explicitly describes each step of the process of building a semantic similarity retrieval-based text chatbot. It is designed to be able to use any text as input (e.g. Facebook messages, tweets, emails, movie lines, speeches, restaurant reviews, ...) so long as it is collected in a single text file, ready for processing.
 
@@ -61,7 +62,7 @@ Ensure that the input movie lines file is extracted to the correct path
 
 ## Credits
 
-Jann is made with love by [Kory Mathewson](https://korymathewson.com).
+`jann` is made with love by [Kory Mathewson](https://korymathewson.com).
 
 
 # Notes:
