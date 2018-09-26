@@ -15,8 +15,8 @@ If you want to use your own dataset, you can change the line `export PATHTXT="da
 ## Install and configure requirements
 
 ```sh
-# sudo apt-get install python3-venv
-# sudo apt-get install python3-dev
+# sudo apt update
+# sudo apt install python3-pip python3-dev python3-venv build-essential libssl-dev libffi-dev python3-setuptools 
 chmod +x install.sh
 ./install.sh
 ```
