@@ -1,1 +1,1 @@
-web: gunicorn serve_model:app
+web: gunicorn app:JANN
