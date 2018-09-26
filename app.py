@@ -6,8 +6,9 @@ from flask import Flask, request, jsonify, abort, make_response
 
 from utils import GenModelUSE
 
-tf.logging.set_verbosity(tf.logging.DEBUG)
+tf.logging.set_verbosity(tf.logging.WARN)
 
+# set the tfhub cache dir explicitly
 os.environ["TFHUB_CACHE_DIR"] = "data/module"
 
 # Buil the USE model
