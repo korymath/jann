@@ -2,7 +2,7 @@ source venv/bin/activate
 
 # Number of lines from input source to use
 export NUMLINES='304713'
-export NUMTREES='50'
+export NUMTREES='100'
 export NUMNEIGHBORS='10'
 export SEARCHK='-1'
 

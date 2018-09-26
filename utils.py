@@ -86,7 +86,7 @@ def embed_lines(args, unencoded_lines, output_dict):
 
     # size of chunk is how many lines will be encoded
     # with each pass of the model
-    size_of_chunk = 64
+    size_of_chunk = 256
     all_chunks = chunks(unencoded_lines, size_of_chunk)
 
     for chunk_unencoded_lines in tqdm(all_chunks, total=(len(unencoded_lines) // size_of_chunk)):
