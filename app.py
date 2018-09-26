@@ -24,39 +24,42 @@ annoy_index_path = DATA_PATH + 'all_lines_50.txt.ann'
 
 # Load generative models from pickles to generate from scratch.
 try:
-    tf.logging.info('Build GEN_MODEL0_USE...')
-    GEN_MODEL_USE = GenModelUSE(
-        annoy_index_path=annoy_index_path,
-        unique_strings=unique_strings
-    )
-    tf.logging.info('Generative <model></model> built.')
+  tf.logging.info('Build GEN_MODEL0_USE...')
+  GEN_MODEL_USE = GenModelUSE(
+    annoy_index_path=annoy_index_path,
+    unique_strings=unique_strings
+  )
+  tf.logging.info('Generative <model></model> built.')
 except (OSError, IOError) as e:
-    tf.logging.info('Error building generative model.')
+  tf.logging.info('Error building generative model.')
 
 # Start the app JANN.
 JANN = Flask(__name__)
 
 @JANN.errorhandler(404)
 def not_found(error):
-    """Flask route for 404 errors."""
-    return make_response(jsonify({'error': 'Not found'}), 404)
+  """Flask route for 404 errors."""
+  return make_response(jsonify({'error': 'Not found'}), 404)
 
 @JANN.route('/model_inference', methods=['POST', 'GET'])
 def model_reply():
-    """Flask route to respond to inference request."""
-    if 'msg' in request.args:
-        message = request.args.get('msg')
-        try:
-            resp = GEN_MODEL_USE.inference(message)
-        except Exception as error:
-            tf.logging.error('Generative model response error', error)
-            resp = None
-    else:
-        resp = None
+  """Flask route to respond to inference request."""
+  if 'msg' in request.args:
+    message = request.args.get('msg')
 
-    # return the response in a json object
-    return json.dumps(resp)
+    resp = None
+    if len(message) > 1:
+      try:
+        resp = GEN_MODEL_USE.inference(message)
+      except Exception as error:
+        tf.logging.error('Generative model response error', error)
+        resp = None
+  else:
+      resp = None
+
+  # return the response in a json object
+  return json.dumps(resp)
 
 if __name__ == '__main__':
-    JANN.run(debug=False, host='0.0.0.0',
-        port=5000, use_reloader=False)
+  JANN.run(debug=False, host='0.0.0.0',
+    port=5000, use_reloader=False)
