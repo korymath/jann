@@ -1,11 +1,5 @@
 # jann
 
-[Working Demo](https://korymath-jann.herokuapp.com/model_inference?msg=selfish)
-
-## Deploy on Heroku
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
 ## Details
 
 I am `jann`, a retreival-based chatbot baseline.
