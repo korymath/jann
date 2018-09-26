@@ -12,24 +12,24 @@ os.environ["TFHUB_CACHE_DIR"] = "data/module"
 
 # Buil the USE model
 DATA_PATH = 'data/CMDC/'
-unique_strings_path = DATA_PATH + 'all_lines_50.txt.embedded.pkl_unique_strings.csv'
+UNIQUE_STRINGS_PATH = DATA_PATH + 'all_lines_50.txt.embedded.pkl_unique_strings.csv'
 
 # load the unique lines
-with open(unique_strings_path) as f:
-  unique_strings = [line.strip() for line in f]
-tf.logging.info('Loaded {} unique embedding strings'.format(len(unique_strings)))
+with open(UNIQUE_STRINGS_PATH) as f:
+  UNIQUE_STRINGS = [line.strip() for line in f]
+tf.logging.info('Loaded {} unique embedding strings'.format(len(UNIQUE_STRINGS)))
 
 # define the path of the nearest neighbor model to use
-annoy_index_path = DATA_PATH + 'all_lines_50.txt.ann'
+ANNOY_INDEX_PATH = DATA_PATH + 'all_lines_50.txt.ann'
 
 # Load generative models from pickles to generate from scratch.
 try:
-  tf.logging.info('Build GEN_MODEL0_USE...')
+  tf.logging.info('Build generative model...')
   GEN_MODEL_USE = GenModelUSE(
-    annoy_index_path=annoy_index_path,
-    unique_strings=unique_strings
+    annoy_index_path=ANNOY_INDEX_PATH,
+    unique_strings=UNIQUE_STRINGS
   )
-  tf.logging.info('Generative <model></model> built.')
+  tf.logging.info('Generative model built.')
 except (OSError, IOError) as e:
   tf.logging.info('Error building generative model.')
 
