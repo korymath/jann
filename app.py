@@ -33,15 +33,15 @@ try:
 except (OSError, IOError) as e:
     tf.logging.info('Error building generative model.')
 
-# Start the models app.
-app = Flask(__name__)
+# Start the app JANN.
+JANN = Flask(__name__)
 
-@app.errorhandler(404)
+@JANN.errorhandler(404)
 def not_found(error):
     """Flask route for 404 errors."""
     return make_response(jsonify({'error': 'Not found'}), 404)
 
-@app.route('/model_inference')
+@JANN.route('/model_inference', methods=['POST', 'GET'])
 def model_reply():
     """Flask route to respond to inference request."""
     if 'msg' in request.args:
@@ -58,5 +58,5 @@ def model_reply():
     return json.dumps(resp)
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0',
+    JANN.run(debug=False, host='0.0.0.0',
         port=5000, use_reloader=False)
