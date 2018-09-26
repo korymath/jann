@@ -149,8 +149,8 @@ class GenModelUSE():
 
         # do not finalize the graph as we are going to modify it with the spm_path
         # g.finalize()
-
-        self.sess = tf.Session(graph=g)
+        config = tf.ConfigProto(allow_soft_placement = True)
+        self.sess = tf.Session(graph=g, config=config)
         self.sess.run(init_op)
 
         # spm_path now contains a path to the SentencePiece
