@@ -83,6 +83,10 @@ def main(arguments):
       # get user input
       user_input = [input('\nQuery Text: ')]
 
+      # if user input is too short
+      if len(user_input[0]) < 1:
+        continue
+
       # process unencoded lines to values and IDs in sparse format
       values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=sp,
         sentences=user_input)
