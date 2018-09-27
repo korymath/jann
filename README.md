@@ -17,6 +17,8 @@ If you want to use your own dataset, you can change the line `export PATHTXT="da
 ```sh
 # sudo apt update
 # sudo apt install python3-pip python3-dev python3-venv build-essential libssl-dev libffi-dev python3-setuptools 
+# sudo apt-get install nginx
+# sudo /etc/init.d/nginx start    # start nginx
 chmod +x install.sh
 ./install.sh
 ```
@@ -43,6 +45,12 @@ chmod +x run.sh
 ## Interaction
 
 For interaction with the model, the only files needed are the unique strings (`_unique_strings.csv`) and the Annoy index (`.ann`) file. With the unique strings and the index file you can build a basic interaction. This is demonstrated in the `interact_with_model.py` file.
+
+## Run Web Server
+
+```sh
+uwsgi --socket :8001 -w wsgi:JANN
+```
 
 ## References
 
