@@ -164,6 +164,11 @@ class GenModelUSE():
 
     def inference(self, input_text):
         """Inference from nearest neighbor model."""
+
+        # Handle the short input
+        if len(input_text) < 1:
+          return 'Say something!'
+
         tf.logging.info('Input text: {}'.format(input_text))
 
         # Build a list of the user input
