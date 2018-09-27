@@ -54,9 +54,9 @@ def messageReceived(methods=['GET', 'POST']):
 
 @socketio.on('my event')
 def handle_my_custom_event(request, methods=['GET', 'POST']):
-    print('received my event: ' + str(request))
+    print('received my event: {}'.format(str(request)))
     gen_resp = GEN_MODEL_USE.inference(request["message"])
-    print(gen_resp)
+    print('generative response: {}'.format(gen_resp))
     request["gen_resp"] = gen_resp
     socketio.emit('my response', request, callback=messageReceived)
 
