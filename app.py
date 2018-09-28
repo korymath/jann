@@ -2,7 +2,6 @@ import os
 import json
 import tensorflow as tf
 from annoy import AnnoyIndex
-from flask_socketio import SocketIO
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -42,7 +41,6 @@ except (OSError, IOError) as e:
 # Start the app JANN.
 JANN = Flask(__name__)
 JANN.config['SECRET_KEY'] = 'IAMASUPERSECRETKEYTHATNOONECANGUESS'
-socketio = SocketIO(JANN)
 
 @JANN.errorhandler(404)
 def not_found(error):
@@ -50,19 +48,8 @@ def not_found(error):
   return make_response(jsonify({'error': 'Not found'}), 404)
 
 @JANN.route('/')
-def sessions():
-    return render_template('session.html')
-
-def messageReceived(methods=['GET', 'POST']):
-    print('message was received!!!')
-
-@socketio.on('my event')
-def handle_my_custom_event(request, methods=['GET', 'POST']):
-    print('received my event: {}'.format(str(request)))
-    gen_resp = GEN_MODEL_USE.inference(request["message"])
-    print('generative response: {}'.format(gen_resp))
-    request["gen_resp"] = gen_resp
-    socketio.emit('my response', request, callback=messageReceived)
+def index():
+    return render_template('index.html')
 
 @JANN.route('/model_inference', methods=['POST', 'GET'])
 def model_reply():
@@ -84,7 +71,4 @@ def model_reply():
   return json.dumps(resp)
 
 if __name__ == '__main__':
-  socketio.run(JANN, debug=True, host='0.0.0.0',
-    port=5000, use_reloader=False)
-  # JANN.run(debug=False, host='0.0.0.0',
-    # port=5000, use_reloader=False)
+  JANN.run(debug=False, host='0.0.0.0', port=5000, use_reloader=False)
