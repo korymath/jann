@@ -7,6 +7,7 @@ export SEARCHK='-1'
 
 # Define the environmental variables
 export PATHTXT="data/CMDC/all_lines_50.txt"
+export PATHTXT="data/CMDC/testing_new_lines.txt"
 export TFHUB_CACHE_DIR="data/module"
 
 # Embed the lines using the encoder (Universal Sentence Encoder)

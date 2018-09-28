@@ -10,8 +10,16 @@ import sentencepiece as spm
 import tensorflow_hub as hub
 from annoy import AnnoyIndex
 
+
 # Specify the local module path
-MODULE_PATH = 'https://tfhub.dev/google/universal-sentence-encoder-lite/2'
+# MODULE_PATH = 'data/modules/universal-sentence-encoder-lite-2'
+# USE_SENTENCE_PIECE = True
+
+MODULE_PATH = 'data/modules/universal-sentence-encoder-2'
+USE_SENTENCE_PIECE = False
+
+# MODULE_PATH = 'data/modules/universal-sentence-encoder-large-3'
+# USE_SENTENCE_PIECE = False
 
 
 def save_obj(obj, name):
@@ -67,21 +75,22 @@ def embed_lines(args, unencoded_lines, output_dict):
     # initialize the variables
     session.run([tf.global_variables_initializer(), tf.tables_initializer()])
 
-    # spm_path now contains a path to the SentencePiece
-    # model stored inside the TF-Hub module
-    spm_path = session.run(module(signature="spm_path"))
-    sp = spm.SentencePieceProcessor()
-    sp.Load(spm_path)
+    if USE_SENTENCE_PIECE:
+      # spm_path now contains a path to the SentencePiece
+      # model stored inside the TF-Hub module
+      spm_path = session.run(module(signature="spm_path"))
+      sp = spm.SentencePieceProcessor()
+      sp.Load(spm_path)
 
-    # build an input placeholder
-    with tf.device('/gpu:0'):
-      input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
-      embeddings = module(inputs=dict(
-        values=input_placeholder.values,
-        indices=input_placeholder.indices,
-        dense_shape=input_placeholder.dense_shape
-      	)
-      )
+      # build an input placeholder
+      with tf.device('/gpu:0'):
+        input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
+        embeddings = module(inputs=dict(
+          values=input_placeholder.values,
+          indices=input_placeholder.indices,
+          dense_shape=input_placeholder.dense_shape
+          )
+        )
 
     # size of chunk is how many lines will be encoded
     # with each pass of the model
@@ -89,19 +98,23 @@ def embed_lines(args, unencoded_lines, output_dict):
     all_chunks = chunks(unencoded_lines, size_of_chunk)
 
     for chunk_unencoded_lines in tqdm(all_chunks, total=(len(unencoded_lines) // size_of_chunk)):
-      # process unencoded lines to values and IDs in sparse format
-      values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=sp,
-        sentences=chunk_unencoded_lines)
+      if USE_SENTENCE_PIECE:
+        # process unencoded lines to values and IDs in sparse format
+        values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=sp,
+          sentences=chunk_unencoded_lines)
 
-      # run the session
-      chunk_line_embeddings = session.run(
-        embeddings,
-        feed_dict={
-          input_placeholder.values: values,
-          input_placeholder.indices: indices,
-          input_placeholder.dense_shape: dense_shape
-        }
-      )
+        # run the session
+        chunk_line_embeddings = session.run(
+          embeddings,
+          feed_dict={
+            input_placeholder.values: values,
+            input_placeholder.indices: indices,
+            input_placeholder.dense_shape: dense_shape
+          }
+        )
+      else:
+        with tf.device('/gpu:0'):
+          chunk_line_embeddings = session.run(module(chunk_unencoded_lines))
 
       # output logs if verbose and hash the object into the full output dataframe
       for i, line_embedding in enumerate(np.array(chunk_line_embeddings).tolist()):
@@ -135,29 +148,40 @@ class GenModelUSE():
         with g.as_default():
           # define the module
           module = hub.Module(MODULE_PATH, trainable=False)
-          # build an input placeholder
-          self.input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
-          # build an input / output from the placeholders
-          self.embeddings = module(inputs=dict(
+
+          if USE_SENTENCE_PIECE:
+            # build an input placeholder
+            self.input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
+            # build an input / output from the placeholders
+            self.embeddings = self.module(inputs=dict(
               values=self.input_placeholder.values,
               indices=self.input_placeholder.indices,
               dense_shape=self.input_placeholder.dense_shape
+              )
             )
-          )
+          else:
+            # build an input placeholder
+            self.input_placeholder = tf.placeholder(tf.string, shape=(None))
+            self.embeddings = module(self.input_placeholder)
+
           init_op = tf.group([tf.global_variables_initializer(), tf.tables_initializer()])
 
-        # do not finalize the graph as we are going to modify it with the spm_path
-        # g.finalize()
+        # do not finalize the graph if using sentence piece module
+        if not USE_SENTENCE_PIECE:
+          g.finalize()
+
+        # define the configuration
         config = tf.ConfigProto(allow_soft_placement = True)
         self.sess = tf.Session(graph=g, config=config)
         self.sess.run(init_op)
 
-        # spm_path now contains a path to the SentencePiece
-        # model stored inside the TF-Hub module
-        with g.as_default():
-          spm_path = self.sess.run(module(signature="spm_path"))
-        self.sp = spm.SentencePieceProcessor()
-        self.sp.Load(spm_path)
+        if USE_SENTENCE_PIECE:
+          # spm_path now contains a path to the SentencePiece
+          # model stored inside the TF-Hub module
+          with g.as_default():
+            spm_path = self.sess.run(module(signature="spm_path"))
+          self.sp = spm.SentencePieceProcessor()
+          self.sp.Load(spm_path)
 
         tf.logging.info('Interactive session is initialized...')
 
@@ -173,20 +197,28 @@ class GenModelUSE():
         # Build a list of the user input
         user_input = [input_text]
 
-        # process unencoded lines to values and IDs in sparse format
-        values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=self.sp,
-          sentences=user_input)
+        if USE_SENTENCE_PIECE:
+          # process unencoded lines to values and IDs in sparse format
+          values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=self.sp,
+            sentences=user_input)
 
-        # run the session
-        # Get embedding of the input text
-        embeddings = self.sess.run(
-          self.embeddings,
-          feed_dict={
-            self.input_placeholder.values: values,
-            self.input_placeholder.indices: indices,
-            self.input_placeholder.dense_shape: dense_shape
-          }
-        )
+          # run the session
+          # Get embedding of the input text
+          embeddings = self.sess.run(
+            self.embeddings,
+            feed_dict={
+              self.input_placeholder.values: values,
+              self.input_placeholder.indices: indices,
+              self.input_placeholder.dense_shape: dense_shape
+            }
+          )
+        else:
+          embeddings = self.sess.run(
+            self.embeddings,
+            feed_dict={
+              self.input_placeholder: user_input
+            }
+          )
 
         tf.logging.info('Successfully generated {} embeddings of length {}.'.format(len(embeddings),
             len(embeddings[0])))

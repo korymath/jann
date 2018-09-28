@@ -106,9 +106,20 @@ export TFHUB_CACHE_DIR=data/module
 
 # Lite model (25 MB)
 wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
-
 cd ${TFHUB_CACHE_DIR}
-tar -zxvf module.tar.gz
+mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
+
+# Standard Model (914 MB)
+wget 'https://alpha.tfhub.dev/google/universal-sentence-encoder/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_standard.tar.gz
+cd ${TFHUB_CACHE_DIR}
+mkdir -p universal-sentence-encoder-2 && tar -zxvf module_standard.tar.gz -C universal-sentence-encoder-2
+
+# Large Model (746 MB)
+wget 'https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_large.tar.gz
+cd ${TFHUB_CACHE_DIR}
+tar -zxvf module_large.tar.gz
+mkdir -p universal-sentence-encoder-large-3 && tar -zxvf module_large.tar.gz -C universal-sentence-encoder-large-3
+
 ```
 
 ## Annoy parameters
