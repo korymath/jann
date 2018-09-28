@@ -2,7 +2,7 @@ import sys
 import random
 import argparse
 import tensorflow as tf
-import tensorflow_hub as hub
+
 from annoy import AnnoyIndex
 
 

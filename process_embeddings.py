@@ -1,4 +1,5 @@
 from __future__ import print_function
+
 import io
 import os
 import re
@@ -8,7 +9,7 @@ import hashlib
 import argparse
 import numpy as np
 import tensorflow as tf
-import tensorflow_hub as hub
+
 from utils import *
 
 

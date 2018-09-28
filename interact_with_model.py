@@ -4,6 +4,7 @@ import argparse
 import tensorflow as tf
 import sentencepiece as spm
 import tensorflow_hub as hub
+
 from annoy import AnnoyIndex
 from utils import MODULE_PATH, process_to_IDs_in_sparse_format
 
