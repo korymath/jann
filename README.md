@@ -83,13 +83,12 @@ Ensure that the input movie lines file is extracted to the correct path
 ValueError: Signature 'spm_path' is missing from meta graph.
 ```
 
-Solution:
-```sh
+#### Solution:
 Currently `jann` is configured to use the `universal-sentence-encoder-lite` module from TFHub as it is small, lightweight, and ready for rapid deployment. This module depends on the [SentencePiece](https://github.com/google/sentencepiece) library and the SentencePiece model published with the module.
 
 You will need to make some minor code adjustments to use the heaviery modules (such as [universal-sentence-encoder](https://alpha.tfhub.dev/google/universal-sentence-encoder/2)
 and [universal-sentence-encoder-large](https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3).
-```
+
 
 ## Credits
 
