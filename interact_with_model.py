@@ -3,10 +3,10 @@ import sys
 import random
 import argparse
 import tensorflow as tf
-import sentencepiece as spm
-import tensorflow_hub as hub
-from annoy import AnnoyIndex
-from utils import GenModelUSE, MODULE_PATH, process_to_IDs_in_sparse_format
+
+from utils import GenModelUSE
+from utils import MODULE_PATH
+from utils import process_to_IDs_in_sparse_format
 
 # set the tfhub cache dir explicitly
 os.environ["TFHUB_CACHE_DIR"] = "data/module"

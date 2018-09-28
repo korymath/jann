@@ -3,7 +3,12 @@ import json
 import tensorflow as tf
 from annoy import AnnoyIndex
 from flask_socketio import SocketIO
-from flask import Flask, request, jsonify, abort, make_response, render_template
+from flask import Flask
+from flask import request
+from flask import jsonify
+from flask import abort
+from flask import make_response
+from flask import render_template
 
 from utils import GenModelUSE
 
