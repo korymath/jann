@@ -12,11 +12,11 @@ from annoy import AnnoyIndex
 
 
 # Specify the local module path
-# MODULE_PATH = 'data/modules/universal-sentence-encoder-lite-2'
-# USE_SENTENCE_PIECE = True
+MODULE_PATH = 'data/modules/universal-sentence-encoder-lite-2'
+USE_SENTENCE_PIECE = True
 
-MODULE_PATH = 'data/modules/universal-sentence-encoder-2'
-USE_SENTENCE_PIECE = False
+# MODULE_PATH = 'data/modules/universal-sentence-encoder-2'
+# USE_SENTENCE_PIECE = False
 
 # MODULE_PATH = 'data/modules/universal-sentence-encoder-large-3'
 # USE_SENTENCE_PIECE = False
@@ -153,7 +153,7 @@ class GenModelUSE():
             # build an input placeholder
             self.input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
             # build an input / output from the placeholders
-            self.embeddings = self.module(inputs=dict(
+            self.embeddings = module(inputs=dict(
               values=self.input_placeholder.values,
               indices=self.input_placeholder.indices,
               dense_shape=self.input_placeholder.dense_shape

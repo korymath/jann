@@ -15,8 +15,6 @@ from utils import GenModelUSE
 
 tf.logging.set_verbosity(tf.logging.WARN)
 
-# set the tfhub cache dir explicitly
-os.environ["TFHUB_CACHE_DIR"] = "data/module"
 
 # Buil the USE model
 DATA_PATH = 'data/CMDC/'
