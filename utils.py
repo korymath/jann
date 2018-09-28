@@ -57,12 +57,11 @@ def chunks(the_big_list, n_sub_list):
     yield the_big_list[i:i + n_sub_list]
 
 def embed_lines(args, unencoded_lines, output_dict):
+  """Embed a collection of lines to an output dictionary."""
+
   # Import the Universal Sentence Encoder's TF Hub module
-
   module = hub.Module(MODULE_PATH, trainable=False)
-
   config = tf.ConfigProto(allow_soft_placement = True)
-  # sess = tf.Session(config = config)
 
   with tf.Session(config = config) as session:
     # initialize the variables

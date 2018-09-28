@@ -1,6 +1,7 @@
 import os
 import json
 import tensorflow as tf
+
 from annoy import AnnoyIndex
 from flask_socketio import SocketIO
 from flask import Flask, request, jsonify, abort, make_response, render_template
