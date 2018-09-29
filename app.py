@@ -71,10 +71,11 @@ def model_reply():
     message = data_json["queryResult"]["queryText"]
     if len(message) > 1:
       try:
-        resp = GEN_MODEL_USE.inference(message)
+        gen_resp = GEN_MODEL_USE.inference(message)
+        resp = {'fulfillmentText': gen_resp}
       except Exception as error:
         tf.logging.error('Generative model response error', error)
-        resp = None
+        resp = {'fulfillmentText': 'None'}
 
   # return the response in a json object
   return json.dumps(resp)
