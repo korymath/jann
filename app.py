@@ -55,9 +55,10 @@ def index():
 def model_reply():
   """Flask route to respond to inference request."""
   if 'msg' in request.args:
-    message = request.args.get('msg')
-
     resp = None
+
+    # direct testing through web interface
+    message = request.args.get('msg')
     if len(message) > 1:
       try:
         resp = GEN_MODEL_USE.inference(message)
@@ -65,10 +66,19 @@ def model_reply():
         tf.logging.error('Generative model response error', error)
         resp = None
   else:
-      resp = None
+    # dialogflow request
+    data_json = request.get_json(silent=True, force=True)
+    message = data_json["queryResult"]["queryText"]
+    if len(message) > 1:
+      try:
+        resp = GEN_MODEL_USE.inference(message)
+      except Exception as error:
+        tf.logging.error('Generative model response error', error)
+        resp = None
 
   # return the response in a json object
   return json.dumps(resp)
 
 if __name__ == '__main__':
-  JANN.run(debug=False, host='0.0.0.0', port=8000, use_reloader=False)
+  JANN.run(debug=False, host='0.0.0.0', 
+    port=8000, use_reloader=True)
