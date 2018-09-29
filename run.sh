@@ -1,9 +1,8 @@
 source venv/bin/activate
 
 # Number of lines from input source to use
-export NUMTREES='50'
+export NUMTREES='100'
 export NUMNEIGHBORS='10'
-export SEARCHK='-1'
 
 # Define the environmental variables
 export PATHTXT="data/CMDC/all_lines_50.txt"

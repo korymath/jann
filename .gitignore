@@ -1,5 +1,6 @@
+.DS_Store
 data/.DS_Store
-
+data/botnik-sources/
 data/CMDC/__MACOSX/
 data/CMDC/movie_lines.txt
 data/CMDC/

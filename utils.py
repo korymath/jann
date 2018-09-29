@@ -185,7 +185,7 @@ class GenModelUSE():
 
         tf.logging.info('Interactive session is initialized...')
 
-    def inference(self, input_text):
+    def inference(self, input_text, num_neighbors=3):
         """Inference from nearest neighbor model."""
 
         # Handle the short input
@@ -227,9 +227,10 @@ class GenModelUSE():
         query_vector = embeddings[0]
 
         # Get nearest neighbors
-        nns = self.annoy_index.get_nns_by_vector(query_vector, 3,
+        nns = self.annoy_index.get_nns_by_vector(query_vector, num_neighbors,
             search_k=-1, include_distances=False)
         tf.logging.info('Nearest neighbor IDS: {}'.format(nns))
+        tf.logging.info(['{}'.format(self.unique_strings[x]) for x in nns])
 
         # Randomly sample from the top-3 nearest neighbors to avoid determinism
         generative_response = self.unique_strings[random.choice(nns)]

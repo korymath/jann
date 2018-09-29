@@ -66,8 +66,9 @@ def main(arguments):
     # if user input is too short
     if len(user_input) < 1:
       continue
-    resp = GEN_MODEL_USE.inference(user_input)
-    tf.logging.info('{}'.format(resp))
+    resp = GEN_MODEL_USE.inference(user_input, 
+      num_neighbors=args.num_neighbors)
+    tf.logging.info('Response: {}'.format(resp))
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
