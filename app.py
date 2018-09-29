@@ -17,7 +17,7 @@ tf.logging.set_verbosity(tf.logging.WARN)
 
 # Buil the USE model
 DATA_PATH = 'data/CMDC/'
-UNIQUE_STRINGS_PATH = DATA_PATH + 'all_lines_50.txt.embedded.pkl_unique_strings.csv'
+UNIQUE_STRINGS_PATH = DATA_PATH + 'all_lines_304713.txt.embedded.pkl_unique_strings.csv'
 
 # load the unique lines
 with open(UNIQUE_STRINGS_PATH) as f:
@@ -25,7 +25,7 @@ with open(UNIQUE_STRINGS_PATH) as f:
 tf.logging.info('Loaded {} unique embedding strings'.format(len(UNIQUE_STRINGS)))
 
 # define the path of the nearest neighbor model to use
-ANNOY_INDEX_PATH = DATA_PATH + 'all_lines_50.txt.ann'
+ANNOY_INDEX_PATH = DATA_PATH + 'all_lines_304713.txt.ann'
 
 # Load generative models from pickles to generate from scratch.
 try:
