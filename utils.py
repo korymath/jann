@@ -185,7 +185,7 @@ class GenModelUSE():
 
         tf.logging.info('Interactive session is initialized...')
 
-    def inference(self, input_text, num_neighbors=3):
+    def inference(self, input_text, num_neighbors=10):
         """Inference from nearest neighbor model."""
 
         # Handle the short input
