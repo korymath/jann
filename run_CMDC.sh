@@ -1,18 +1,18 @@
 source venv/bin/activate
 
 # Number of lines from input source to use
-export NUMLINES='304713'
+export NUMLINES='51'
 export NUMTREES='100'
 export NUMNEIGHBORS='10'
 export SEARCHK='-1'
 
 # Define the environmental variables
-export INFILE="data/CMDC/movie_lines.txt"
+export INFILEPATH="data/CMDC"
 export PATHTXT="data/CMDC/all_lines_${NUMLINES}.txt"
 export TFHUB_CACHE_DIR=data/module
 
 # Extract the raw lines to a single file:
-python process_cornell_data.py --infile=${INFILE} --outfile=${PATHTXT} --num_lines=${NUMLINES} &&
+python process_cornell_data.py --infile_path=${INFILEPATH} --outfile=${PATHTXT} --num_lines=${NUMLINES} &&
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
 python embed_lines.py ${PATHTXT} &&
