@@ -28,7 +28,7 @@ def main(arguments):
     tf.logging.set_verbosity(tf.logging.WARN)
 
   # Build the input message list
-  lines = load_data(args.infile, 'list', args.pairs)
+  lines, response_lines = load_data(args.infile, 'list', args.pairs)
   tf.logging.log(tf.logging.INFO,
     '{} lines in input file: {}'.format(len(lines), args.infile))
 

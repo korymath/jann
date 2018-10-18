@@ -43,20 +43,24 @@ def load_data(file_path, dest_type, pairs=False):
         if clean_string:
           dest.append(clean_string)
       tempfile.close()
+      dest2 = None
     else:
-      dest = []
-      tf.logging.info('loading pairs data')
+      first_lines = []
+      second_lines = []
+      tf.logging.info('Loading pairs data')
       with open(file_path, 'r', encoding='iso-8859-1') as f:
         reader = csv.reader(f, delimiter='\t')
         for row in reader:
-          print(row)
-          dest.append(row)
+          first_lines.append(row[0])
+          second_lines.append(row[1])
+      dest = first_lines
+      dest2 = second_lines
   elif dest_type == 'dict':
     dest = load_obj(file_path)
   else:
     dest = None
     print('Bad destination data type specified.')
-  return dest
+  return dest, dest2
 
 def process_to_IDs_in_sparse_format(sp, sentences):
   # An utility method that processes sentences with the sentence piece processor
