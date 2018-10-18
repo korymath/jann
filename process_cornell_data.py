@@ -1,18 +1,23 @@
 import sys
+import argparse
 import numpy as np
 
 
 def main(arguments):
-  fname = sys.argv[1]
-  output_fname = sys.argv[2]
-  num_lines = int(sys.argv[3])
 
-  print(fname, output_fname, num_lines)
+  parser = argparse.ArgumentParser(
+      description=__doc__,
+      formatter_class=argparse.RawDescriptionHelpFormatter)
+  parser.add_argument('--infile', help="Input file")
+  parser.add_argument('--outfile', help="Verbose")
+  parser.add_argument('--num_lines', type=int, help="Verbose")
+  parser.add_argument('--store_pairs', dest='store_pairs',
+                      help="Store pairs", action='store_true')
+  args = parser.parse_args(arguments)
 
   lines = []
-
   try:
-    with open(fname, errors='ignore') as f:
+    with open(args.infile, errors='ignore') as f:
       for line in f:
         values = line.split(" +++$+++ ")
         lines.append(values[-1].strip())
@@ -23,15 +28,15 @@ def main(arguments):
 
   print("Found {} input lines.".format(len(lines)))
 
-  with open(output_fname, 'w') as f:
-    if num_lines != 0:
-      for item in np.random.choice(lines, num_lines, replace=False):
+  with open(args.outfile, 'w') as f:
+    if args.num_lines != 0:
+      for item in np.random.choice(lines, args.num_lines, replace=False):
         f.write("%s\n" % item)
     else:
       for item in lines:
         f.write("%s\n" % item)
 
-  print("Wrote {} lines to {}.".format(len(lines), output_fname))
+  print("Wrote {} lines to {}.".format(len(lines), args.outfile))
 
 
 if __name__ == "__main__":

@@ -7,11 +7,12 @@ export NUMNEIGHBORS='10'
 export SEARCHK='-1'
 
 # Define the environmental variables
+export INFILE="data/CMDC/movie_lines.txt"
 export PATHTXT="data/CMDC/all_lines_${NUMLINES}.txt"
 export TFHUB_CACHE_DIR=data/module
 
 # Extract the raw lines to a single file:
-python process_cornell_data.py data/CMDC/movie_lines.txt ${PATHTXT} ${NUMLINES} &&
+python process_cornell_data.py --infile=${INFILE} --outfile=${PATHTXT} --num_lines=${NUMLINES} &&
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
 python embed_lines.py ${PATHTXT} &&
