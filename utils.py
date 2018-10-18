@@ -78,7 +78,7 @@ def chunks(the_big_list, n_sub_list):
   for i in range(0, len(the_big_list), n_sub_list):
     yield the_big_list[i:i + n_sub_list]
 
-def embed_lines(args, unencoded_lines, output_dict):
+def embed_lines(args, unencoded_lines, output_dict, unencoded_lines_responses=None):
   """Embed a collection of lines to an output dictionary."""
 
   # Import the Universal Sentence Encoder's TF Hub module
@@ -111,7 +111,13 @@ def embed_lines(args, unencoded_lines, output_dict):
     size_of_chunk = 256
     all_chunks = chunks(unencoded_lines, size_of_chunk)
 
-    for chunk_unencoded_lines in tqdm(all_chunks, total=(len(unencoded_lines) // size_of_chunk)):
+    # TODO(korymath): chunk by id and then index together
+    # need to chunk the unencoded lines and responses together by id
+    chunk_unencoded_lines_responses = []
+
+    for chunk_unencoded_lines in tqdm(all_chunks,
+      total=(len(unencoded_lines) // size_of_chunk)):
+
       if USE_SENTENCE_PIECE:
         # process unencoded lines to values and IDs in sparse format
         values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=sp,
@@ -140,9 +146,11 @@ def embed_lines(args, unencoded_lines, output_dict):
 
         # Encode a hash for the string
         hash_object = hashlib.md5(chunk_unencoded_lines[i].encode('utf-8'))
+
         # Add a row to the dataframe
         output_dict[hash_object.hexdigest()] = {'line': chunk_unencoded_lines[i],
-                                                'line_embedding': line_embedding}
+                                                'line_embedding': line_embedding,
+                                                'response': chunk_unencoded_lines_responses[i]}
   return output_dict
 
 class GenModelUSE():

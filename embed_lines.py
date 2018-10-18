@@ -42,10 +42,12 @@ def main(arguments):
 
     # Remove lines which have already been encoded
     unencoded_lines = []
-    for line in lines:
+    unencoded_lines_responses = []
+    for i,line in enumerate(lines):
       line_hash = hashlib.md5(line.encode('utf-8')).hexdigest()
       if line_hash not in output_dict.keys():
         unencoded_lines.append(line)
+        unencoded_lines_responses.append(response_lines[i])
   else:
     # make a new dataframe
     tf.logging.log(tf.logging.INFO, 'Creating new dictionary to save outputs')
@@ -56,7 +58,9 @@ def main(arguments):
     '{} new lines to encode...'.format(len(unencoded_lines)))
 
   if len(unencoded_lines) > 0:
-    output_dict = embed_lines(args, unencoded_lines, output_dict)
+    output_dict = embed_lines(args, unencoded_lines, 
+      output_dict, unencoded_lines_responses)
+
     # Save output dataframe to pickle
     save_obj(output_dict, output_file_path)
     tf.logging.log(tf.logging.INFO,
