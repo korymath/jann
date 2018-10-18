@@ -1,5 +1,6 @@
 import os
 import io
+import csv
 import random
 import pickle
 import hashlib
@@ -30,17 +31,26 @@ def load_obj(name):
     with open(name, 'rb') as f:
         return pickle.load(f)
 
-def load_data(file_path, dest_type):
+def load_data(file_path, dest_type, pairs=False):
   """Load line separated text files into list. """
   if dest_type == 'list':
-    tempfile = io.open(file_path, 'r', encoding="utf-8", errors='ignore')
-    dest = []
-    for line in tempfile:
-      clean_string = line.strip()
-      # check if blank
-      if clean_string:
-        dest.append(clean_string)
-    tempfile.close()
+    if not pairs:
+      tempfile = io.open(file_path, 'r', encoding="utf-8", errors='ignore')
+      dest = []
+      for line in tempfile:
+        clean_string = line.strip()
+        # check if blank
+        if clean_string:
+          dest.append(clean_string)
+      tempfile.close()
+    else:
+      dest = []
+      tf.logging.info('loading pairs data')
+      with open(file_path, 'r', encoding='iso-8859-1') as f:
+        reader = csv.reader(f, delimiter='\t')
+        for row in reader:
+          print(row)
+          dest.append(row)
   elif dest_type == 'dict':
     dest = load_obj(file_path)
   else:

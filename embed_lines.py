@@ -1,5 +1,6 @@
 import os
 import sys
+import csv
 import argparse
 import tensorflow as tf
 
@@ -17,8 +18,6 @@ def main(arguments):
                       help="Pairs", action='store_true')
   parser.add_argument('--verbose', dest='verbose',
                       help="Verbose", action='store_true')
-  parser.add_argument('--verbose', dest='verbose',
-                      help="Verbose", action='store_true')
   parser.set_defaults(verbose=False, pairs=False)
   args = parser.parse_args(arguments)
 
@@ -29,7 +28,7 @@ def main(arguments):
     tf.logging.set_verbosity(tf.logging.WARN)
 
   # Build the input message list
-  lines = load_data(args.infile, 'list')
+  lines = load_data(args.infile, 'list', args.pairs)
   tf.logging.log(tf.logging.INFO,
     '{} lines in input file: {}'.format(len(lines), args.infile))
 

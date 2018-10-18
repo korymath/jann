@@ -67,7 +67,6 @@ def main(arguments):
   else:
     tf.logging.set_verbosity(tf.logging.WARN)
 
-
   # movie lines file
   movie_lines_file = os.path.join(args.infile_path, 'movie_lines.txt')
   # movie conversations file
