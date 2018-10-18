@@ -54,8 +54,8 @@ def main(arguments):
   parser.add_argument('--outfile', help="Verbose")
   parser.add_argument('--num_lines', type=int, help="Verbose")
   parser.add_argument('--delimiter', default='\t', help="Verbose")
-  parser.add_argument('--store_pairs', dest='store_pairs',
-                      help="Store pairs", action='store_true')
+  parser.add_argument('--pairs', dest='pairs',
+                      help="Pairs", action='store_true')
   parser.add_argument('--verbose', dest='verbose',
                       help="Verbose", action='store_true')
   parser.set_defaults(verbose=True)
@@ -73,7 +73,7 @@ def main(arguments):
   # movie conversations file
   movie_conversations_file = os.path.join(args.infile_path,'movie_conversations.txt')
 
-  if not args.store_pairs:
+  if not args.pairs:
     tf.logging.log(tf.logging.INFO,
       "Selecting and saving {} random lines...".format(args.num_lines))
     lines = []

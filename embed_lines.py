@@ -13,9 +13,13 @@ def main(arguments):
       description=__doc__,
       formatter_class=argparse.RawDescriptionHelpFormatter)
   parser.add_argument('infile', help="Input file")
+  parser.add_argument('--pairs', dest='pairs',
+                      help="Pairs", action='store_true')
   parser.add_argument('--verbose', dest='verbose',
                       help="Verbose", action='store_true')
-  parser.set_defaults(verbose=False)
+  parser.add_argument('--verbose', dest='verbose',
+                      help="Verbose", action='store_true')
+  parser.set_defaults(verbose=False, pairs=False)
   args = parser.parse_args(arguments)
 
   # Reduce logging output.
