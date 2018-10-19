@@ -31,7 +31,7 @@ def load_obj(name):
     with open(name, 'rb') as f:
         return pickle.load(f)
 
-def load_data(file_path, dest_type, pairs=False):
+def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
   """Load line separated text files into list. """
   if dest_type == 'list':
     if not pairs:
@@ -49,7 +49,7 @@ def load_data(file_path, dest_type, pairs=False):
       second_lines = []
       tf.logging.info('Loading pairs data')
       with open(file_path, 'r', encoding='iso-8859-1') as f:
-        reader = csv.reader(f, delimiter='\t')
+        reader = csv.reader(f, delimiter=delimiter)
         for row in reader:
           first_lines.append(row[0])
           second_lines.append(row[1])
@@ -57,9 +57,11 @@ def load_data(file_path, dest_type, pairs=False):
       dest2 = second_lines
   elif dest_type == 'dict':
     dest = load_obj(file_path)
+    dest2 = None
   else:
     dest = None
-    print('Bad destination data type specified.')
+    dest2 = None
+    tf.logging.info('Bad destination data type specified.')
   return dest, dest2
 
 def process_to_IDs_in_sparse_format(sp, sentences):
@@ -73,7 +75,7 @@ def process_to_IDs_in_sparse_format(sp, sentences):
   indices=[[row,col] for row in range(len(ids)) for col in range(len(ids[row]))]
   return (values, indices, dense_shape)
 
-def chunks(the_big_list, n_sub_list):
+def get_id_chunks(the_big_list, n_sub_list):
   """Yield successive n_sub_list-sized chunks from the_big_list."""
   for i in range(0, len(the_big_list), n_sub_list):
     yield the_big_list[i:i + n_sub_list]
@@ -109,14 +111,17 @@ def embed_lines(args, unencoded_lines, output_dict, unencoded_lines_responses=No
     # size of chunk is how many lines will be encoded
     # with each pass of the model
     size_of_chunk = 256
-    all_chunks = chunks(unencoded_lines, size_of_chunk)
 
-    # TODO(korymath): chunk by id and then index together
-    # need to chunk the unencoded lines and responses together by id
-    chunk_unencoded_lines_responses = []
+    # ensure that every line has a response
+    assert len(unencoded_lines) == len(unencoded_lines_responses)
+    all_id_chunks = get_id_chunks(range(len(unencoded_lines)), size_of_chunk)
 
-    for chunk_unencoded_lines in tqdm(all_chunks,
+    for id_chunk in tqdm(all_id_chunks,
       total=(len(unencoded_lines) // size_of_chunk)):
+
+      # get the chunk of lines and matching responses by list of ids
+      chunk_unencoded_lines = [unencoded_lines[x] for x in id_chunk]
+      chunk_unencoded_lines_responses = [unencoded_lines_responses[x] for x in id_chunk]
 
       if USE_SENTENCE_PIECE:
         # process unencoded lines to values and IDs in sparse format

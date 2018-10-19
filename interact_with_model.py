@@ -15,6 +15,9 @@ def main(arguments):
       formatter_class=argparse.RawDescriptionHelpFormatter)
   parser.add_argument('--verbose', dest='verbose',
                       help="Verbose", action='store_true')
+  parser.add_argument('--pairs', dest='pairs',
+                      help="Pairs", action='store_true')
+  parser.add_argument('--delimiter', default='\t', help="Delimiter")
   parser.add_argument('--num_neighbors', type=int,
     help='number of nearest neighbors to return')
   parser.add_argument('--search_k', type=int,
@@ -66,9 +69,10 @@ def main(arguments):
     # if user input is too short
     if len(user_input) < 1:
       continue
-    resp = GEN_MODEL_USE.inference(user_input, 
-      num_neighbors=args.num_neighbors)
-    tf.logging.info('Response: {}'.format(resp))
+    resp = GEN_MODEL_USE.inference(user_input, num_neighbors=1).split(args.delimiter)
+    # respond with the response from the [input,response] pair
+    # using matching to the input string
+    tf.logging.info('Response: {}'.format(resp[1]))
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

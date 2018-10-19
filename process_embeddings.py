@@ -19,6 +19,9 @@ def main(arguments):
     description=__doc__,
     formatter_class=argparse.RawDescriptionHelpFormatter)
   parser.add_argument('--path_to_text', help="path to original text file")
+  parser.add_argument('--pairs', dest='pairs',
+                      help="Pairs", action='store_true')
+  parser.add_argument('--delimiter', default='\t', help="Verbose")
   parser.add_argument('--verbose', dest='verbose',
                       help="Verbose", action='store_true')
   parser.set_defaults(verbose=True)
@@ -32,7 +35,8 @@ def main(arguments):
   else:
     tf.logging.set_verbosity(tf.logging.INFO)
 
-  embeddings = load_data(path_to_embeddings, 'dict')
+  # load the embeddings data object
+  embeddings, _ = load_data(path_to_embeddings, 'dict')
   tf.logging.log(tf.logging.INFO,
     '{} lines in embeddings: {}'.format(len(embeddings.keys()),
       path_to_embeddings))
@@ -41,7 +45,11 @@ def main(arguments):
   with open(path_to_embeddings + '_unique_strings.csv', 'wb') as outfile:
     for k,v in embeddings.items():
       output_line = v['line'].encode('utf-8')
-      outfile.write(output_line+b'\n')
+      if args.pairs:
+        output_line_response = v['response'].encode('utf-8')
+        outfile.write(output_line + args.delimiter.encode('utf-8') + output_line_response + b'\n')
+      else:
+        outfile.write(output_line+b'\n')
       all_embeddings.append(v['line_embedding'])
 
   # Convert to a numpy array

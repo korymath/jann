@@ -16,6 +16,7 @@ def main(arguments):
   parser.add_argument('infile', help="Input file")
   parser.add_argument('--pairs', dest='pairs',
                       help="Pairs", action='store_true')
+  parser.add_argument('--delimiter', default='\t', help="Delimiter")
   parser.add_argument('--verbose', dest='verbose',
                       help="Verbose", action='store_true')
   parser.set_defaults(verbose=False, pairs=False)
@@ -40,7 +41,7 @@ def main(arguments):
       'Loading existing saved output file: {}'.format(output_file_path))
     output_dict = load_obj(output_file_path)
 
-    # Remove lines which have already been encoded
+    # Exclude lines which have already been encoded
     unencoded_lines = []
     unencoded_lines_responses = []
     for i,line in enumerate(lines):
@@ -53,12 +54,13 @@ def main(arguments):
     tf.logging.log(tf.logging.INFO, 'Creating new dictionary to save outputs')
     output_dict = {}
     unencoded_lines = lines
+    unencoded_lines_responses = response_lines
 
   tf.logging.log(tf.logging.INFO,
     '{} new lines to encode...'.format(len(unencoded_lines)))
 
   if len(unencoded_lines) > 0:
-    output_dict = embed_lines(args, unencoded_lines, 
+    output_dict = embed_lines(args, unencoded_lines,
       output_dict, unencoded_lines_responses)
 
     # Save output dataframe to pickle
