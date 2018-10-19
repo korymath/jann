@@ -1,19 +1,19 @@
 source venv/bin/activate
 
 # Number of lines from input source to use
-export NUMPAIRS='100'
+export NUMPAIRS='182'
 export NUMTREES='100'
 export NUMNEIGHBORS='10'
 
 # Define the environmental variables
-export INFILE="data/CMDC/botnik-sources/byron.txt"
+export INFILE="data/botnik-sources/byron.txt"
 export PATHTXT="data/botnik-sources/byron_${NUMPAIRS}_pairs.txt"
 
 # Build the pairs from the input source
-python process_pairs_data.py --infile_path=${INFILE} --outfile=${PATHTXT} --num_lines=${NUMPAIRS} --pairs --verbose &&
+python process_pairs_data.py --infile=${INFILE} --outfile=${PATHTXT} --num_lines=${NUMPAIRS} --verbose &&
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
-python embed_lines.py ${PATHTXT} --verbose &&
+python embed_lines.py ${PATHTXT} --verbose --pairs &&
 
 # Process the embeddings and save as unique strings and numpy array
 python process_embeddings.py --path_to_text=${PATHTXT} --pairs --verbose &&

@@ -32,12 +32,12 @@ def main(arguments):
   tf.logging.log(tf.logging.INFO, 'Input file: {}'.format(args.infile))
 
   # load the lines
-  lines = load_lines(movie_lines_file, movie_lines_fields)
-  tf.logging.log(tf.logging.INFO, "Loaded {} lines: {}".format(len(lines), movie_lines_file))
+  lines, _ = load_data(args.infile, dest_type='list', delimiter='\n')
+  tf.logging.log(tf.logging.INFO, "Loaded {} lines: {}".format(len(lines), args.infile))
 
   with open(args.outfile, 'w', encoding='iso-8859-1') as outputfile:
     writer = csv.writer(outputfile, delimiter=args.delimiter)
-    collected_pairs = extract_pairs(conversations)
+    collected_pairs = extract_pairs_from_lines(lines)
     random_idxs = np.random.choice(len(collected_pairs), args.num_lines, replace=False)
     for random_id in random_idxs:
       pair = collected_pairs[random_id]

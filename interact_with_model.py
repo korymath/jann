@@ -72,6 +72,7 @@ def main(arguments):
     resp = GEN_MODEL_USE.inference(user_input, num_neighbors=1).split(args.delimiter)
     # respond with the response from the [input,response] pair
     # using matching to the input string
+    tf.logging.info('Closest matched root: {}'.format(resp[0]))
     tf.logging.info('Response: {}'.format(resp[1]))
 
 if __name__ == '__main__':

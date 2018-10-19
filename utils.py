@@ -61,6 +61,15 @@ def extract_pairs(conversations):
         collected_pairs.append([first_line, second_line])
   return collected_pairs
 
+def extract_pairs_from_lines(lines):
+  collected_pairs = []
+  for i in range(len(lines) - 1):
+    first_line = lines[i].strip()
+    second_line = lines[i+1].strip()
+    if first_line and second_line:
+      collected_pairs.append([first_line, second_line])
+  return collected_pairs
+
 def save_obj(obj, name):
     with open(name, 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
@@ -73,7 +82,7 @@ def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
   """Load line separated text files into list. """
   if dest_type == 'list':
     if not pairs:
-      tempfile = io.open(file_path, 'r', encoding="utf-8", errors='ignore')
+      tempfile = io.open(file_path, 'r', encoding="iso-8859-1", errors='ignore')
       dest = []
       for line in tempfile:
         clean_string = line.strip()
@@ -295,9 +304,9 @@ class GenModelUSE():
         nns = self.annoy_index.get_nns_by_vector(query_vector, num_neighbors,
             search_k=-1, include_distances=False)
         tf.logging.info('Nearest neighbor IDS: {}'.format(nns))
-        tf.logging.info(['{}'.format(self.unique_strings[x]) for x in nns])
+        # tf.logging.info(['{}'.format(self.unique_strings[x].split('\t')) for x in nns])
 
-        # Randomly sample from the top-3 nearest neighbors to avoid determinism
+        # Randomly sample from the top-N nearest neighbors to avoid determinism
         generative_response = self.unique_strings[random.choice(nns)]
 
         return generative_response
