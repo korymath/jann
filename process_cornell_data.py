@@ -5,48 +5,10 @@ import argparse
 import numpy as np
 import tensorflow as tf
 
-
-def load_lines(fname, fields):
-  lines = {}
-  with open(fname, 'r', encoding='iso-8859-1') as f:
-    for line in f:
-      values = line.split(" +++$+++ ")
-      line_obj = {}
-      for i, field in enumerate(fields):
-        line_obj[field] = values[i]
-      lines[line_obj['lineID']] = line_obj
-    return lines
-
-def load_conversations(fname, lines, fields):
-  convos = []
-  with open(fname, 'r', encoding='iso-8859-1') as f:
-    for line in f:
-      values = line.split(" +++$+++ ")
-      conv_obj = {}
-      for i, field in enumerate(fields):
-          conv_obj[field] = values[i]
-      # Convert string to list
-      line_ids = eval(conv_obj["utteranceIDs"])
-      conv_obj["lines"] = []
-      for line_id in line_ids:
-        conv_obj["lines"].append(lines[line_id])
-      convos.append(conv_obj)
-    return convos
-
-def extract_pairs(conversations):
-  collected_pairs = []
-  for conversation in conversations:
-    # ignore last line
-    for i in range(len(conversation["lines"]) - 1):
-      first_line = conversation["lines"][i]["text"].strip()
-      second_line = conversation["lines"][i+1]["text"].strip()
-      if first_line and second_line:
-        collected_pairs.append([first_line, second_line])
-  return collected_pairs
+from utils import *
 
 
 def main(arguments):
-
   parser = argparse.ArgumentParser(
       description=__doc__,
       formatter_class=argparse.RawDescriptionHelpFormatter)
