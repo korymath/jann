@@ -85,7 +85,7 @@ def main(arguments):
             writer.writerow(pair)
         else:
           for item in collected_pairs:
-            writer.writerow(pair)
+            writer.writerow(item)
 
       tf.logging.log(tf.logging.INFO,
         "Wrote {} pairs to {}.".format(args.num_lines, args.outfile))
