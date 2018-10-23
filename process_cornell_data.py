@@ -78,10 +78,14 @@ def main(arguments):
         writer = csv.writer(outputfile, delimiter=args.delimiter)
         collected_pairs = extract_pairs(conversations)
         print('Total of {} pairs'.format(len(collected_pairs)))
-        random_idxs = np.random.choice(len(collected_pairs), args.num_lines, replace=False)
-        for random_id in random_idxs:
-          pair = collected_pairs[random_id]
-          writer.writerow(pair)
+        if int(args.num_lines) != 0:
+          random_idxs = np.random.choice(len(collected_pairs), args.num_lines, replace=False)
+          for random_id in random_idxs:
+            pair = collected_pairs[random_id]
+            writer.writerow(pair)
+        else:
+          for item in collected_pairs:
+            writer.writerow(pair)
 
       tf.logging.log(tf.logging.INFO,
         "Wrote {} pairs to {}.".format(args.num_lines, args.outfile))
