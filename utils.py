@@ -13,11 +13,11 @@ from annoy import AnnoyIndex
 
 
 # Specify the local module path
-# MODULE_PATH = 'data/modules/universal-sentence-encoder-lite-2'
-# USE_SENTENCE_PIECE = True
+MODULE_PATH = 'data/modules/universal-sentence-encoder-lite-2'
+USE_SENTENCE_PIECE = True
 
-MODULE_PATH = 'data/modules/universal-sentence-encoder-2'
-USE_SENTENCE_PIECE = False
+# MODULE_PATH = 'data/modules/universal-sentence-encoder-2'
+# USE_SENTENCE_PIECE = False
 
 # MODULE_PATH = 'data/modules/universal-sentence-encoder-large-3'
 # USE_SENTENCE_PIECE = False
