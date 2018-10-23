@@ -77,6 +77,7 @@ def main(arguments):
       with open(args.outfile, 'w', encoding='iso-8859-1') as outputfile:
         writer = csv.writer(outputfile, delimiter=args.delimiter)
         collected_pairs = extract_pairs(conversations)
+        print('Total of {} pairs'.format(len(collected_pairs)))
         random_idxs = np.random.choice(len(collected_pairs), args.num_lines, replace=False)
         for random_id in random_idxs:
           pair = collected_pairs[random_id]
