@@ -101,8 +101,8 @@ Icon made by [Freepik](http://www.freepik.com) from [www.flaticon.com](https://w
 
 ## Prepare the Universal Sentence Encoder embedding module
 ```sh
-mkdir data/module
-export TFHUB_CACHE_DIR=data/module
+mkdir data/modules
+export TFHUB_CACHE_DIR=data/modules
 
 # Lite model (25 MB)
 wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
