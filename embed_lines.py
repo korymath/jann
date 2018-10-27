@@ -31,30 +31,40 @@ def main(arguments):
   # Build the input message list
   lines, response_lines = load_data(args.infile, 'list', args.pairs)
   tf.logging.log(tf.logging.INFO,
-    '{} lines in input file: {}'.format(len(lines), args.infile))
+      '{} lines in input file: {}'.format(len(lines), args.infile))
+  if response_lines:
+    tf.logging.log(tf.logging.INFO,
+        '{} response lines in input file: {}'.format(len(response_lines),
+                                                     args.infile))
 
   # check if the file exists
   output_file_path = args.infile + '.embedded.pkl'
   if os.path.isfile(output_file_path):
     # if it does, load it in
     tf.logging.log(tf.logging.INFO,
-      'Loading existing saved output file: {}'.format(output_file_path))
+        'Loading existing saved output file: {}'.format(output_file_path))
     output_dict = load_obj(output_file_path)
 
     # Exclude lines which have already been encoded
     unencoded_lines = []
     unencoded_lines_responses = []
-    for i,line in enumerate(lines):
+    for i, line in enumerate(lines):
       line_hash = hashlib.md5(line.encode('utf-8')).hexdigest()
       if line_hash not in output_dict.keys():
         unencoded_lines.append(line)
-        unencoded_lines_responses.append(response_lines[i])
+        if response_lines:
+          unencoded_lines_responses.append(lines[i])
+        else:
+          unencoded_lines_responses.append(response_lines[i])
   else:
     # make a new dataframe
     tf.logging.log(tf.logging.INFO, 'Creating new dictionary to save outputs')
     output_dict = {}
     unencoded_lines = lines
-    unencoded_lines_responses = response_lines
+    if response_lines == None:
+      unencoded_lines_responses = lines
+    else:
+      unencoded_lines_responses = response_lines
 
   tf.logging.log(tf.logging.INFO,
     '{} new lines to encode...'.format(len(unencoded_lines)))
