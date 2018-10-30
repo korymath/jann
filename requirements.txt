@@ -23,7 +23,7 @@ protobuf==3.6.1
 python-engineio==2.3.0
 python-socketio==2.0.0
 pyzmq==17.1.2
-requests==2.19.1
+requests>=2.20.0
 sentencepiece==0.1.4
 six==1.11.0
 tensorboard==1.10.0
