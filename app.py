@@ -17,12 +17,13 @@ tf.logging.set_verbosity(tf.logging.WARN)
 
 # Buil the USE model
 DATA_PATH = 'data/CMDC/'
-UNIQUE_STRINGS_PATH = DATA_PATH + 'all_lines_50.txt.embedded.pkl_unique_strings.csv'
+UNIQUE_STRINGS_PATH = (DATA_PATH +
+    'all_lines_50.txt.embedded.pkl_unique_strings.csv')
 
 # load the unique lines
 with open(UNIQUE_STRINGS_PATH) as f:
   UNIQUE_STRINGS = [line.strip() for line in f]
-tf.logging.info('Loaded {} unique embedding strings'.format(len(UNIQUE_STRINGS)))
+tf.logging.info('Loaded {} unique strings'.format(len(UNIQUE_STRINGS)))
 
 # define the path of the nearest neighbor model to use
 ANNOY_INDEX_PATH = DATA_PATH + 'all_lines_50.txt.ann'
@@ -81,5 +82,4 @@ def model_reply():
   return json.dumps(resp)
 
 if __name__ == '__main__':
-  JANN.run(debug=False, host='0.0.0.0', 
-    port=8000, use_reloader=True)
+  JANN.run(debug=False, host='0.0.0.0', port=8000, use_reloader=True)

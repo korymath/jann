@@ -1,35 +1,22 @@
 import os
 import sys
-import csv
-import argparse
 import tensorflow as tf
 
-from utils import *
+import utils
 
 
 def main(arguments):
-  """Main run code."""
+  """Main run function for embed lines."""
 
-  parser = argparse.ArgumentParser(
-      description=__doc__,
-      formatter_class=argparse.RawDescriptionHelpFormatter)
-  parser.add_argument('infile', help="Input file")
-  parser.add_argument('--pairs', dest='pairs',
-                      help="Pairs", action='store_true')
-  parser.add_argument('--delimiter', default='\t', help="Delimiter")
-  parser.add_argument('--verbose', dest='verbose',
-                      help="Verbose", action='store_true')
-  parser.set_defaults(verbose=False, pairs=False)
-  args = parser.parse_args(arguments)
-
-  # Reduce logging output.
-  if args.verbose:
-    tf.logging.set_verbosity(tf.logging.DEBUG)
-  else:
-    tf.logging.set_verbosity(tf.logging.WARN)
+  # Parse the arguments
+  args = utils.parse_arguments(arguments)
 
   # Build the input message list
-  lines, response_lines = load_data(args.infile, 'list', args.pairs)
+  try:
+    lines, response_lines = utils.load_data(args.infile, 'list', args.pairs)
+  except FileNotFoundError as e:
+    tf.logging.log(tf.logging.ERROR, e)
+    sys.exit(0)
   tf.logging.log(tf.logging.INFO,
       '{} lines in input file: {}'.format(len(lines), args.infile))
   if response_lines:
@@ -43,16 +30,16 @@ def main(arguments):
     # if it does, load it in
     tf.logging.log(tf.logging.INFO,
         'Loading existing saved output file: {}'.format(output_file_path))
-    output_dict = load_obj(output_file_path)
+    output_dict = utils.load_obj(output_file_path)
 
     # Exclude lines which have already been encoded
     unencoded_lines = []
     unencoded_lines_responses = []
     for i, line in enumerate(lines):
-      line_hash = hashlib.md5(line.encode('utf-8')).hexdigest()
+      line_hash = utils.hashlib.md5(line.encode('utf-8')).hexdigest()
       if line_hash not in output_dict.keys():
         unencoded_lines.append(line)
-        if response_lines:
+        if response_lines == None:
           unencoded_lines_responses.append(lines[i])
         else:
           unencoded_lines_responses.append(response_lines[i])
@@ -70,11 +57,11 @@ def main(arguments):
     '{} new lines to encode...'.format(len(unencoded_lines)))
 
   if len(unencoded_lines) > 0:
-    output_dict = embed_lines(args, unencoded_lines,
+    output_dict = utils.embed_lines(args, unencoded_lines,
       output_dict, unencoded_lines_responses)
 
     # Save output dataframe to pickle
-    save_obj(output_dict, output_file_path)
+    utils.save_obj(output_dict, output_file_path)
     tf.logging.log(tf.logging.INFO,
       '{} lines embedded and saved. Quitting.'.format(len(output_dict)))
   else:

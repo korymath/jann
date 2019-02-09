@@ -17,7 +17,9 @@ class UserBehavior(TaskSet):
   def post_to_reply(self):
     for i in range(5):
       data['counter'] = i
-      self.client.post("/model_inference", json.dumps(data), headers=headers)
+      self.client.post("/model_inference",
+                       json.dumps(data),
+                       headers=headers)
 
 class WebsiteUser(HttpLocust):
   task_set = UserBehavior

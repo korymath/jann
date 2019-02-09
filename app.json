@@ -1,6 +1,6 @@
 {
   "name": "jann",
-  "description": "Hi. I am jann. I am text input - text output chatbot model that is Just Approximate Nearest Neighbour.",
+  "description": "Hi. I am jann. A retrieval-based chatbot using Just Approximate Nearest Neighbour.",
   "repository": "https://github.com/korymath/jann",
   "logo": "https://raw.githubusercontent.com/korymath/jann/master/static/robot.png",
   "keywords": ["python", "flask", "chatbot"]

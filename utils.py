@@ -4,6 +4,7 @@ import csv
 import random
 import pickle
 import hashlib
+import argparse
 import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
@@ -12,71 +13,71 @@ import tensorflow_hub as hub
 from annoy import AnnoyIndex
 
 
-# Specify the local module path
-MODULE_PATH = 'data/modules/universal-sentence-encoder-lite-2'
-USE_SENTENCE_PIECE = True
+def parse_arguments(arguments):
+  parser = argparse.ArgumentParser(
+      description=__doc__,
+      formatter_class=argparse.RawDescriptionHelpFormatter)
 
-# MODULE_PATH = 'data/modules/universal-sentence-encoder-2'
-# USE_SENTENCE_PIECE = False
+  parser.add_argument('--module_path',
+                      help='Specify the local encoder model path',
+                      default='data/modules/universal-sentence-encoder-lite-2')
+  parser.add_argument('--infile',
+                      help="Path to input file.",
+                      default='data/CMDC/all_lines_50.txt')
+  parser.add_argument('--infile_path',
+                      help="Input file path")
+  parser.add_argument('--outfile',
+                      help="Output file.",
+                      default=None)
+  parser.add_argument('--num_lines',
+                      type=int,
+                      help="Number of lines to processes")
+  parser.add_argument('--pairs',
+                      dest='pairs',
+                      help="Flag to use pairs mode or not.",
+                      action='store_true',
+                      default=False)
+  parser.add_argument('--delimiter',
+                      default='\t',
+                      help="Delimeter between input<>response.")
+  parser.add_argument('--verbose',
+                      dest='verbose',
+                      help="Flag to add verbose logging detail.",
+                      action='store_true',
+                      default=True)
+  parser.add_argument('--num_trees',
+                      type=int,
+                      help='Number of trees for to search for neighbors.',
+                      default=100)
+  parser.add_argument('--num_neighbors',
+                      type=int,
+                      help='Number of nearest neighbors to return.',
+                      default=10)
+  parser.add_argument('--search_k',
+                      type=int,
+                      help='Number of trees to search.',
+                      default=10)
+  parser.add_argument('--use_sentence_piece',
+                      type=bool,
+                      default=False)
+  args = parser.parse_args(arguments)
 
-# MODULE_PATH = 'data/modules/universal-sentence-encoder-large-3'
-# USE_SENTENCE_PIECE = False
+  # Specify the local module path
+  if 'lite' in args.module_path:
+    args.use_sentence_piece = True
 
+  # Reduce logging output.
+  if args.verbose:
+    tf.logging.set_verbosity(tf.logging.DEBUG)
+  else:
+    tf.logging.set_verbosity(tf.logging.WARN)
+  return args
 
-def load_lines(fname, fields):
-  lines = {}
-  with open(fname, 'r', encoding='iso-8859-1') as f:
-    for line in f:
-      values = line.split(" +++$+++ ")
-      line_obj = {}
-      for i, field in enumerate(fields):
-        line_obj[field] = values[i]
-      lines[line_obj['lineID']] = line_obj
-    return lines
-
-def load_conversations(fname, lines, fields):
-  convos = []
-  with open(fname, 'r', encoding='iso-8859-1') as f:
-    for line in f:
-      values = line.split(" +++$+++ ")
-      conv_obj = {}
-      for i, field in enumerate(fields):
-          conv_obj[field] = values[i]
-      # Convert string to list
-      line_ids = eval(conv_obj["utteranceIDs"])
-      conv_obj["lines"] = []
-      for line_id in line_ids:
-        conv_obj["lines"].append(lines[line_id])
-      convos.append(conv_obj)
-    return convos
-
-def extract_pairs(conversations):
-  collected_pairs = []
-  for conversation in conversations:
-    # ignore last line
-    for i in range(len(conversation["lines"]) - 1):
-      first_line = conversation["lines"][i]["text"].strip()
-      second_line = conversation["lines"][i+1]["text"].strip()
-      if first_line and second_line:
-        collected_pairs.append([first_line, second_line])
-  return collected_pairs
-
-def extract_pairs_from_lines(lines):
-  collected_pairs = []
-  for i in range(len(lines) - 1):
-    first_line = lines[i].strip()
-    second_line = lines[i+1].strip()
-    if first_line and second_line:
-      collected_pairs.append([first_line, second_line])
-  return collected_pairs
-
-def save_obj(obj, name):
-    with open(name, 'wb') as f:
-        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 def load_obj(name):
     with open(name, 'rb') as f:
         return pickle.load(f)
+
 
 def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
   """Load line separated text files into list. """
@@ -111,8 +112,65 @@ def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
     tf.logging.info('Bad destination data type specified.')
   return dest, dest2
 
+
+def load_lines(fname, fields):
+  lines = {}
+  with open(fname, 'r', encoding='iso-8859-1') as f:
+    for line in f:
+      values = line.split(" +++$+++ ")
+      line_obj = {}
+      for i, field in enumerate(fields):
+        line_obj[field] = values[i]
+      lines[line_obj['lineID']] = line_obj
+    return lines
+
+
+def load_conversations(fname, lines, fields):
+  convos = []
+  with open(fname, 'r', encoding='iso-8859-1') as f:
+    for line in f:
+      values = line.split(" +++$+++ ")
+      conv_obj = {}
+      for i, field in enumerate(fields):
+          conv_obj[field] = values[i]
+      # Convert string to list
+      line_ids = eval(conv_obj["utteranceIDs"])
+      conv_obj["lines"] = []
+      for line_id in line_ids:
+        conv_obj["lines"].append(lines[line_id])
+      convos.append(conv_obj)
+    return convos
+
+
+def extract_pairs(conversations):
+  collected_pairs = []
+  for conversation in conversations:
+    # ignore last line
+    for i in range(len(conversation["lines"]) - 1):
+      first_line = conversation["lines"][i]["text"].strip()
+      second_line = conversation["lines"][i+1]["text"].strip()
+      if first_line and second_line:
+        collected_pairs.append([first_line, second_line])
+  return collected_pairs
+
+
+def extract_pairs_from_lines(lines):
+  collected_pairs = []
+  for i in range(len(lines) - 1):
+    first_line = lines[i].strip()
+    second_line = lines[i+1].strip()
+    if first_line and second_line:
+      collected_pairs.append([first_line, second_line])
+  return collected_pairs
+
+
+def save_obj(obj, name):
+    with open(name, 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+
 def process_to_IDs_in_sparse_format(sp, sentences):
-  # An utility method that processes sentences with the sentence piece processor
+  # A utility method that processes sentences with the sentence piece processor
   # 'sp' and returns the results in tf.SparseTensor-similar format:
   # (values, indices, dense_shape)
   ids = [sp.EncodeAsIds(x) for x in sentences]
@@ -122,23 +180,26 @@ def process_to_IDs_in_sparse_format(sp, sentences):
   indices=[[row,col] for row in range(len(ids)) for col in range(len(ids[row]))]
   return (values, indices, dense_shape)
 
+
 def get_id_chunks(the_big_list, n_sub_list):
   """Yield successive n_sub_list-sized chunks from the_big_list."""
   for i in range(0, len(the_big_list), n_sub_list):
     yield the_big_list[i:i + n_sub_list]
 
-def embed_lines(args, unencoded_lines, output_dict, unencoded_lines_responses=None):
+
+def embed_lines(args, unencoded_lines, output_dict,
+                unencoded_lines_responses=None):
   """Embed a collection of lines to an output dictionary."""
 
   # Import the Universal Sentence Encoder's TF Hub module
-  module = hub.Module(MODULE_PATH, trainable=False)
+  module = hub.Module(args.module_path, trainable=False)
   config = tf.ConfigProto(allow_soft_placement = True)
 
   with tf.Session(config = config) as session:
     # initialize the variables
     session.run([tf.global_variables_initializer(), tf.tables_initializer()])
 
-    if USE_SENTENCE_PIECE:
+    if args.use_sentence_piece:
       # spm_path now contains a path to the SentencePiece
       # model stored inside the TF-Hub module
       spm_path = session.run(module(signature="spm_path"))
@@ -168,15 +229,15 @@ def embed_lines(args, unencoded_lines, output_dict, unencoded_lines_responses=No
 
       # get the chunk of lines and matching responses by list of ids
       chunk_unencoded_lines = [unencoded_lines[x] for x in id_chunk]
-      chunk_unencoded_lines_responses = [unencoded_lines_responses[x] for x in id_chunk]
+      chunck_unenc_resp = [unencoded_lines_responses[x] for x in id_chunk]
 
-      if USE_SENTENCE_PIECE:
+      if args.use_sentence_piece:
         # process unencoded lines to values and IDs in sparse format
         values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=sp,
           sentences=chunk_unencoded_lines)
 
         # run the session
-        chunk_line_embeddings = session.run(
+        chunk_line_embds = session.run(
           embeddings,
           feed_dict={
             input_placeholder.values: values,
@@ -186,28 +247,33 @@ def embed_lines(args, unencoded_lines, output_dict, unencoded_lines_responses=No
         )
       else:
         with tf.device('/gpu:0'):
-          chunk_line_embeddings = session.run(module(chunk_unencoded_lines))
+          chunk_line_embds = session.run(module(chunk_unencoded_lines))
 
-      # output logs if verbose and hash the object into the full output dataframe
-      for i, line_embedding in enumerate(np.array(chunk_line_embeddings).tolist()):
+      # hash the object into the full output dataframe
+      for i, line_embedding in enumerate(np.array(chunk_line_embds).tolist()):
         if args.verbose:
-          tf.logging.log(tf.logging.INFO, "Line: {}".format(chunk_unencoded_lines[i]))
-          tf.logging.log(tf.logging.INFO, "Embedding size: {}".format(len(line_embedding)))
-          line_embedding_snippet = ", ".join((str(x) for x in line_embedding[:3]))
-          tf.logging.log(tf.logging.INFO, "Embedding: [{}, ...]\n".format(line_embedding_snippet))
+          tf.logging.info(
+            "Line: {}".format(chunk_unencoded_lines[i]))
+          tf.logging.info(
+            "Embedding size: {}".format(len(line_embedding)))
+          snippet = ", ".join((str(x) for x in line_embedding[:3]))
+          tf.logging.info(
+            "Embedding: [{}, ...]\n".format(snippet))
 
         # Encode a hash for the string
         hash_object = hashlib.md5(chunk_unencoded_lines[i].encode('utf-8'))
 
         # Add a row to the dataframe
-        output_dict[hash_object.hexdigest()] = {'line': chunk_unencoded_lines[i],
-                                                'line_embedding': line_embedding,
-                                                'response': chunk_unencoded_lines_responses[i]}
+        output_dict[hash_object.hexdigest()] = {
+          'line': chunk_unencoded_lines[i],
+          'line_embedding': line_embedding,
+          'response': chunck_unenc_resp[i]
+        }
   return output_dict
 
-class GenModelUSE():
-
-    def __init__(self, annoy_index_path, unique_strings):
+class GenModelUSE(object):
+    def __init__(self, annoy_index_path, unique_strings,
+                 use_sentence_piece, module_path):
         self.annoy_index_path = annoy_index_path
         self.unique_strings = unique_strings
 
@@ -221,11 +287,12 @@ class GenModelUSE():
         g = tf.Graph()
         with g.as_default():
           # define the module
-          module = hub.Module(MODULE_PATH, trainable=False)
+          module = hub.Module(module_path, trainable=False)
 
-          if USE_SENTENCE_PIECE:
+          if use_sentence_piece:
             # build an input placeholder
-            self.input_placeholder = tf.sparse_placeholder(tf.int64, shape=[None, None])
+            self.input_placeholder = tf.sparse_placeholder(tf.int64,
+                                                           shape=[None, None])
             # build an input / output from the placeholders
             self.embeddings = module(inputs=dict(
               values=self.input_placeholder.values,
@@ -238,10 +305,11 @@ class GenModelUSE():
             self.input_placeholder = tf.placeholder(tf.string, shape=(None))
             self.embeddings = module(self.input_placeholder)
 
-          init_op = tf.group([tf.global_variables_initializer(), tf.tables_initializer()])
+          init_op = tf.group(
+            [tf.global_variables_initializer(), tf.tables_initializer()])
 
         # do not finalize the graph if using sentence piece module
-        if not USE_SENTENCE_PIECE:
+        if not use_sentence_piece:
           g.finalize()
 
         # define the configuration
@@ -249,7 +317,7 @@ class GenModelUSE():
         self.sess = tf.Session(graph=g, config=config)
         self.sess.run(init_op)
 
-        if USE_SENTENCE_PIECE:
+        if use_sentence_piece:
           # spm_path now contains a path to the SentencePiece
           # model stored inside the TF-Hub module
           with g.as_default():
@@ -271,10 +339,10 @@ class GenModelUSE():
         # Build a list of the user input
         user_input = [input_text]
 
-        if USE_SENTENCE_PIECE:
+        if args.use_sentence_piece:
           # process unencoded lines to values and IDs in sparse format
-          values, indices, dense_shape = process_to_IDs_in_sparse_format(sp=self.sp,
-            sentences=user_input)
+          values, indices, dense_shape = process_to_IDs_in_sparse_format(
+            sp=self.sp, sentences=user_input)
 
           # run the session
           # Get embedding of the input text
@@ -294,8 +362,9 @@ class GenModelUSE():
             }
           )
 
-        tf.logging.info('Successfully generated {} embeddings of length {}.'.format(len(embeddings),
-            len(embeddings[0])))
+        tf.logging.info(
+          'Successfully generated {} embeddings of length {}.'.format(
+            len(embeddings), len(embeddings[0])))
 
         # Extract the query vector of interest.
         query_vector = embeddings[0]
@@ -304,9 +373,10 @@ class GenModelUSE():
         nns = self.annoy_index.get_nns_by_vector(query_vector, num_neighbors,
             search_k=-1, include_distances=False)
         tf.logging.info('Nearest neighbor IDS: {}'.format(nns))
-        # tf.logging.info(['{}'.format(self.unique_strings[x].split('\t')) for x in nns])
+        # tf.logging.info(['{}'.format(
+          # self.unique_strings[x].split('\t')) for x in nns])
 
-        # Randomly sample from the top-N nearest neighbors to avoid determinism
+        # Randomly sample from the top-N nearest neighbors to avoid repetition
         generative_response = self.unique_strings[random.choice(nns)]
 
         return generative_response
