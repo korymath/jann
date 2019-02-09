@@ -74,13 +74,9 @@ def parse_arguments(arguments):
   return args
 
 
-def load_obj(name):
-    with open(name, 'rb') as f:
-        return pickle.load(f)
-
-
 def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
   """Load line separated text files into list. """
+
   if dest_type == 'list':
     if not pairs:
       tempfile = io.open(file_path, 'r', encoding="iso-8859-1", errors='ignore')
@@ -104,7 +100,8 @@ def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
       dest = first_lines
       dest2 = second_lines
   elif dest_type == 'dict':
-    dest = load_obj(file_path)
+    with open(file_path, 'rb') as f:
+      dest = pickle.load(f)
     dest2 = None
   else:
     dest = None
@@ -114,6 +111,7 @@ def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
 
 
 def load_lines(fname, fields):
+  """Load Cornell Movie Dialog Lines."""
   lines = {}
   with open(fname, 'r', encoding='iso-8859-1') as f:
     for line in f:
@@ -126,6 +124,7 @@ def load_lines(fname, fields):
 
 
 def load_conversations(fname, lines, fields):
+  """Load Cornell Movie Dialog Conversations."""
   convos = []
   with open(fname, 'r', encoding='iso-8859-1') as f:
     for line in f:
@@ -143,6 +142,7 @@ def load_conversations(fname, lines, fields):
 
 
 def extract_pairs(conversations):
+  """Extract pairs from the Cornell Movie Dialog Conversations."""
   collected_pairs = []
   for conversation in conversations:
     # ignore last line
@@ -155,6 +155,7 @@ def extract_pairs(conversations):
 
 
 def extract_pairs_from_lines(lines):
+  """Extract pairs from Cornell Movie Dialog Lines."""
   collected_pairs = []
   for i in range(len(lines) - 1):
     first_line = lines[i].strip()
@@ -162,11 +163,6 @@ def extract_pairs_from_lines(lines):
     if first_line and second_line:
       collected_pairs.append([first_line, second_line])
   return collected_pairs
-
-
-def save_obj(obj, name):
-    with open(name, 'wb') as f:
-        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 
 def process_to_IDs_in_sparse_format(sp, sentences):

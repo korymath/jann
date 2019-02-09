@@ -1,5 +1,6 @@
 import os
 import sys
+import pickle
 import tensorflow as tf
 
 import utils
@@ -30,7 +31,8 @@ def main(arguments):
     # if it does, load it in
     tf.logging.log(tf.logging.INFO,
         'Loading existing saved output file: {}'.format(output_file_path))
-    output_dict = utils.load_obj(output_file_path)
+    with open(output_file_path, 'rb') as f:
+      output_dict = pickle.load(f)
 
     # Exclude lines which have already been encoded
     unencoded_lines = []
@@ -61,7 +63,9 @@ def main(arguments):
       output_dict, unencoded_lines_responses)
 
     # Save output dataframe to pickle
-    utils.save_obj(output_dict, output_file_path)
+    with open(output_file_path, 'wb') as f:
+      pickle.dump(output_dict, f, pickle.HIGHEST_PROTOCOL)
+
     tf.logging.log(tf.logging.INFO,
       '{} lines embedded and saved. Quitting.'.format(len(output_dict)))
   else:
