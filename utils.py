@@ -59,7 +59,7 @@ def parse_arguments(arguments):
                       default=10)
   parser.add_argument('--use_sentence_piece',
                       type=bool,
-                      default=False)
+                      default=True)
   args = parser.parse_args(arguments)
 
   # Specify the local module path

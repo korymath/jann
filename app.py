@@ -9,31 +9,32 @@ from flask import abort
 from flask import make_response
 from flask import render_template
 
-from utils import GenModelUSE
-
+import utils
 
 tf.logging.set_verbosity(tf.logging.WARN)
 
 
 # Buil the USE model
-DATA_PATH = 'data/CMDC/'
-UNIQUE_STRINGS_PATH = (DATA_PATH +
+data_path = 'data/CMDC/'
+unique_strings_path = (data_path +
     'all_lines_50.txt.embedded.pkl_unique_strings.csv')
 
 # load the unique lines
-with open(UNIQUE_STRINGS_PATH) as f:
-  UNIQUE_STRINGS = [line.strip() for line in f]
-tf.logging.info('Loaded {} unique strings'.format(len(UNIQUE_STRINGS)))
+with open(unique_strings_path) as f:
+  unique_strings = [line.strip() for line in f]
+tf.logging.info('Loaded {} unique strings'.format(len(unique_strings)))
 
 # define the path of the nearest neighbor model to use
-ANNOY_INDEX_PATH = DATA_PATH + 'all_lines_50.txt.ann'
+annoy_index_path = data_path + 'all_lines_50.txt.ann'
 
 # Load generative models from pickles to generate from scratch.
 try:
   tf.logging.info('Build generative model...')
-  GEN_MODEL_USE = GenModelUSE(
-    annoy_index_path=ANNOY_INDEX_PATH,
-    unique_strings=UNIQUE_STRINGS
+  gen_model_use = utils.GenModelUSE(
+    annoy_index_path=annoy_index_path,
+    unique_strings=unique_strings,
+    module_path='data/modules/universal-sentence-encoder-lite-2',
+    use_sentence_piece=True
   )
   tf.logging.info('Generative model built.')
 except (OSError, IOError) as e:
@@ -62,7 +63,7 @@ def model_reply():
     message = request.args.get('msg')
     if len(message) > 1:
       try:
-        resp = GEN_MODEL_USE.inference(message)
+        resp = gen_model_use.inference(message)
       except Exception as error:
         tf.logging.error('Generative model response error', error)
         resp = None
@@ -72,7 +73,7 @@ def model_reply():
     message = data_json["queryResult"]["queryText"]
     if len(message) > 1:
       try:
-        gen_resp = GEN_MODEL_USE.inference(message)
+        gen_resp = gen_model_use.inference(message)
         resp = {'fulfillmentText': gen_resp}
       except Exception as error:
         tf.logging.error('Generative model response error', error)
