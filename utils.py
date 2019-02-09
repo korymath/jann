@@ -13,7 +13,7 @@ import tensorflow_hub as hub
 from annoy import AnnoyIndex
 
 
-def parse_arguments(arguments):
+def parse_arguments(arguments=None):
   parser = argparse.ArgumentParser(
       description=__doc__,
       formatter_class=argparse.RawDescriptionHelpFormatter)
