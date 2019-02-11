@@ -27,9 +27,9 @@ def main(arguments):
                 outfile.write(output_line +
                               args.delimiter.encode('utf-8') +
                               output_line_response + b'\n')
-        else:
-            outfile.write(output_line+b'\n')
-        all_embeddings.append(v['line_embedding'])
+            else:
+                outfile.write(output_line + b'\n')
+            all_embeddings.append(v['line_embedding'])
 
     # Convert to a numpy array
     all_embeddings_np = np.array([np.array(xi) for xi in all_embeddings])

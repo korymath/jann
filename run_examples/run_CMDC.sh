@@ -1,7 +1,7 @@
 source venv/bin/activate
 
 # Number of lines from input source to use
-export NUMLINES='50'
+export NUMLINES='1000'
 export NUMTREES='100'
 export NUMNEIGHBORS='10'
 export SEARCHK='-1'
@@ -16,7 +16,7 @@ python process_cornell_data.py --infile_path=${INFILEPATH} \
 --outfile=${INFILE} --num_lines=${NUMLINES} &&
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
-python embed_lines.py --infile=${INFILE} &&
+python embed_lines.py --infile=${INFILE} --verbose &&
 
 # Process the embeddings and save as unique strings and numpy array
 python process_embeddings.py --infile=${INFILE} --verbose &&

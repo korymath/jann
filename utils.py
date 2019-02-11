@@ -218,9 +218,9 @@ def embed_lines(args, unencoded_lines, output_dict,
                   )
                 )
 
-            # size of chunk is how many lines will be encoded
-            # with each pass of the model
-            size_of_chunk = 256
+        # size of chunk is how many lines will be encoded
+        # with each pass of the model
+        size_of_chunk = 256
 
         # ensure that every line has a response
         assert len(unencoded_lines) == len(unencoded_lines_resps)
@@ -239,14 +239,15 @@ def embed_lines(args, unencoded_lines, output_dict,
                   sp=sp, sentences=chunk_unencoded_lines)
 
                 # run the session
-                chunk_line_embds = session.run(
-                  embeddings,
-                  feed_dict={
-                    input_placeholder.values: values,
-                    input_placeholder.indices: indices,
-                    input_placeholder.dense_shape: dense_shape
-                  }
-                )
+                with tf.device('/gpu:0'):
+                    chunk_line_embds = session.run(
+                        embeddings,
+                        feed_dict={
+                            input_placeholder.values: values,
+                            input_placeholder.indices: indices,
+                            input_placeholder.dense_shape: dense_shape
+                        }
+                    )
             else:
                 with tf.device('/gpu:0'):
                     chunk_line_embds = session.run(
@@ -257,22 +258,22 @@ def embed_lines(args, unencoded_lines, output_dict,
               np.array(chunk_line_embds).tolist()):
                 if args.verbose:
                     tf.logging.info(
-                       "Line: {}".format(chunk_unencoded_lines[i]))
+                        "Line: {}".format(chunk_unencoded_lines[i]))
                     tf.logging.info(
                         "Embedding size: {}".format(len(line_embedding)))
                     snippet = ", ".join((str(x) for x in line_embedding[:3]))
                     tf.logging.info(
                         "Embedding: [{}, ...]\n".format(snippet))
 
-            # Encode a hash for the string
-            hash_object = hashlib.md5(chunk_unencoded_lines[i].encode('utf-8'))
+                # Encode a hash for the string
+                hash_object = hashlib.md5(chunk_unencoded_lines[i].encode('utf-8'))
 
-            # Add a row to the dataframe
-            output_dict[hash_object.hexdigest()] = {
-              'line': chunk_unencoded_lines[i],
-              'line_embedding': line_embedding,
-              'response': chunck_unenc_resp[i]
-            }
+                # Add a row to the dataframe
+                output_dict[hash_object.hexdigest()] = {
+                  'line': chunk_unencoded_lines[i],
+                  'line_embedding': line_embedding,
+                  'response': chunck_unenc_resp[i]
+                }
     return output_dict
 
 
