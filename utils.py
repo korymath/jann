@@ -147,7 +147,7 @@ def extract_pairs(conversations):
     """Extract pairs from the Cornell Movie Dialog Conversations."""
     collected_pairs = []
     for conversation in conversations:
-        # ignore last line
+        # if convo is ABC, pairs are AB and BC
         for i in range(len(conversation["lines"]) - 1):
             first_line = conversation["lines"][i]["text"].strip()
             second_line = conversation["lines"][i+1]["text"].strip()
@@ -378,11 +378,10 @@ class GenModelUSE(object):
         query_vector = embeddings[0]
 
         # Get nearest neighbors
-        nns = self.annoy_index.get_nns_by_vector(
-          query_vector, num_neighbors, search_k=-1, include_distances=False)
+        nns, distances = self.annoy_index.get_nns_by_vector(
+          query_vector, num_neighbors, search_k=-1, include_distances=True)
+
+        # Log the ids
         tf.logging.info('Nearest neighbor IDS: {}'.format(nns))
 
-        # Randomly sample from the top-N nearest neighbors to avoid repetition
-        generative_response = self.unique_strings[random.choice(nns)]
-
-        return generative_response
+        return nns, distances
