@@ -1,7 +1,6 @@
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkorymath%2Fjann.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkorymath%2Fjann?ref=badge_shield) [![CircleCI](https://circleci.com/gh/korymath/jann.svg?style=svg)](https://circleci.com/gh/korymath/jann)
-
 # jann
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkorymath%2Fjann.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkorymath%2Fjann?ref=badge_shield)
+[![CircleCI](https://circleci.com/gh/korymath/jann.svg?style=svg)](https://circleci.com/gh/korymath/jann)
 
 Hi. I am `jann`. I am a retrieval-based chatbot. I would make a great baseline.
 
