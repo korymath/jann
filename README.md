@@ -78,66 +78,8 @@ Change change the line `export INFILE="data/CMDC/YOUR_FAVORITE_FILENAME.txt"` in
 
 You might connect it with a source from [Botnik Studio's Sources](http://github.com/botnikstudios/sources). You can find an example of the entire `jann` pipeline using the `pairs` configuration on a custom datasource in `run_byron_pairs.sh`.
 
-## Issues
-
-* Add sources
 * uwsgi --socket :8001 -w wsgi:JANN
 zsh: command not found: uwsgi
-
-### Error/Warning:
-```sh
-/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:205: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
-  return f(*args, **kwds)
-```
-Solution (for OSX 10.13):
-```sh
-pip install --ignore-installed --upgrade https://github.com/lakshayg/tensorflow-build/releases/download/tf1.9.0-macos-py27-py36/tensorflow-1.9.0-cp36-cp36m-macosx_10_13_x86_64.whl
-```
-
-### Error/Warning:
-```sh
-FileNotFoundError: [Errno 2] No such file or directory: 'data/CMDC/movie_lines.txt'
-```
-Solution:
-```sh
-Ensure that the input movie lines file is extracted to the correct path
-```
-
-### Error/Warning
-```sh
-ValueError: Signature 'spm_path' is missing from meta graph.
-```
-
-#### Solution:
-Currently `jann` is configured to use the `universal-sentence-encoder-lite` module from TFHub as it is small, lightweight, and ready for rapid deployment. This module depends on the [SentencePiece](https://github.com/google/sentencepiece) library and the SentencePiece model published with the module.
-
-You will need to make some minor code adjustments to use the heaviery modules (such as [universal-sentence-encoder](https://alpha.tfhub.dev/google/universal-sentence-encoder/2)
-and [universal-sentence-encoder-large](https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3).
-
-# Notes:
-
-## Prepare the Universal Sentence Encoder embedding module
-```sh
-mkdir data/modules
-export TFHUB_CACHE_DIR=data/modules
-
-# Lite model (25 MB)
-wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
-cd ${TFHUB_CACHE_DIR}
-mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
-
-# Standard Model (914 MB)
-wget 'https://alpha.tfhub.dev/google/universal-sentence-encoder/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_standard.tar.gz
-cd ${TFHUB_CACHE_DIR}
-mkdir -p universal-sentence-encoder-2 && tar -zxvf module_standard.tar.gz -C universal-sentence-encoder-2
-
-# Large Model (746 MB)
-wget 'https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_large.tar.gz
-cd ${TFHUB_CACHE_DIR}
-tar -zxvf module_large.tar.gz
-mkdir -p universal-sentence-encoder-large-3 && tar -zxvf module_large.tar.gz -C universal-sentence-encoder-large-3
-
-```
 
 ## Annoy parameters
 

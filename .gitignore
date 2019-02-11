@@ -6,6 +6,9 @@ data/botnik-sources/
 data/CMDC/__MACOSX/
 data/CMDC/movie_lines.txt
 data/CMDC/
+data/module/
+data/module/*
+data/modules/
 data/modules/*
 
 # Byte-compiled / optimized / DLL files

@@ -33,7 +33,7 @@ try:
   gen_model_use = utils.GenModelUSE(
     annoy_index_path=annoy_index_path,
     unique_strings=unique_strings,
-    module_path='data/modules/universal-sentence-encoder-lite-2',
+    module_path='data/module/universal-sentence-encoder-lite-2',
     use_sentence_piece=True
   )
   tf.logging.info('Generative model built.')

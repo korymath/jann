@@ -20,7 +20,10 @@ def parse_arguments(arguments=None):
 
   parser.add_argument('--module_path',
                       help='Specify the local encoder model path',
-                      default='data/modules/universal-sentence-encoder-lite-2')
+                      default='data/module/universal-sentence-encoder-lite-2')
+  parser.add_argument('--use_sentence_piece',
+                      type=bool,
+                      default=True)
   parser.add_argument('--infile',
                       help="Path to input file.",
                       default='data/CMDC/all_lines_50.txt')
@@ -57,9 +60,6 @@ def parse_arguments(arguments=None):
                       type=int,
                       help='Number of trees to search.',
                       default=10)
-  parser.add_argument('--use_sentence_piece',
-                      type=bool,
-                      default=True)
   args = parser.parse_args(arguments)
 
   # Specify the local module path
@@ -323,7 +323,7 @@ class GenModelUSE(object):
 
         tf.logging.info('Interactive session is initialized...')
 
-    def inference(self, input_text, num_neighbors=10):
+    def inference(self, input_text, num_neighbors=10, args={}):
         """Inference from nearest neighbor model."""
 
         # Handle the short input

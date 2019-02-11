@@ -47,12 +47,13 @@ def main(arguments):
     if len(user_input) < 1:
       continue
     resp = gen_model_use.inference(user_input,
-                                   num_neighbors=1).split(args.delimiter)
+                                   num_neighbors=1,
+                                   args=args).split(args.delimiter)
     # respond with the response from the [input,response] pair
     # using matching to the input string
     tf.logging.info('Closest matched root: {}'.format(resp[0]))
     if len(resp) > 0:
-      tf.logging.info('Response: {}'.format(resp[1]))
+      tf.logging.info('Response: {}'.format(resp[0]))
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
