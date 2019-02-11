@@ -78,14 +78,12 @@ Change change the line `export INFILE="data/CMDC/YOUR_FAVORITE_FILENAME.txt"` in
 
 You might connect it with a source from [Botnik Studio's Sources](http://github.com/botnikstudios/sources). You can find an example of the entire `jann` pipeline using the `pairs` configuration on a custom datasource in `run_byron_pairs.sh`.
 
-* uwsgi --socket :8001 -w wsgi:JANN
-zsh: command not found: uwsgi
+## The Wiki
 
-## Annoy parameters
+There is more information on the [Wiki](https://github.com/korymath/jann/wiki).
 
-There are two parameters for the Approximate Nearest Neighbour:
-* set `n_trees` as large as possible given the amount of memory you can afford,
-* set `search_k` as large as possible given the time constraints you have for the queries. This parameter is a interaction tradeoff between accuracy and speed.
+## Start Contributing
+The guide for contributors can be found [here](https://github.com/korymath/jann/blob/master/CONTRIBUTING.md). It covers everything you need to know to start contributing to `jann`.
 
 ## References
 
