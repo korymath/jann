@@ -1,6 +1,7 @@
 # jann
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkorymath%2Fjann.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkorymath%2Fjann?ref=badge_shield)
 [![CircleCI](https://circleci.com/gh/korymath/jann.svg?style=svg)](https://circleci.com/gh/korymath/jann)
+[![Coverage Status](https://coveralls.io/repos/github/korymath/jann/badge.svg?branch=master)](https://coveralls.io/github/korymath/jann?branch=master)
 
 Hi. I am `jann`. I am a retrieval-based chatbot. I would make a great baseline.
 
@@ -87,6 +88,12 @@ There is more information on the [Wiki](https://github.com/korymath/jann/wiki).
 
 ## Start Contributing
 The guide for contributors can be found [here](https://github.com/korymath/jann/blob/master/CONTRIBUTING.md). It covers everything you need to know to start contributing to `jann`.
+
+## Tests
+
+```sh
+python3 -m coverage run tests.py
+```
 
 ## References
 
