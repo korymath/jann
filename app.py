@@ -11,8 +11,8 @@ tf.logging.set_verbosity(tf.logging.DEBUG)
 
 # Buil the USE model
 data_path = 'data/CMDC/'
-unique_strings_path = (data_path +
-                       'all_lines_50.txt.embedded.pkl_unique_strings.csv')
+model_name = 'all_lines_50_pairs.txt.embedded.pkl_unique_strings.csv'
+unique_strings_path = (data_path + model_name)
 
 # load the unique lines
 with open(unique_strings_path) as f:
@@ -71,7 +71,17 @@ def model_reply():
     # If the message exists, then use it to generate an inference
     if message:
         try:
-            gen_resp = gen_model_use.inference(message)
+            nns, distances = gen_model_use.inference(message)
+
+            # print all the returned responses, and distance to input
+            for nn, distance in zip(nns, distances):
+                tf.logging.info('d: {}, {}'.format(
+                    distance,
+                    unique_strings[nn].split('\t')))  # args.delimiter
+
+            # for example we can take the response (index 1)
+            # to the closest neighbor
+            gen_resp = unique_strings[nns[0]].split('\t')[1]
             resp = {'fulfillmentText': gen_resp}
         except Exception as error:
             tf.logging.error('Generative model response error', error)

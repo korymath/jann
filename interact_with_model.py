@@ -49,6 +49,7 @@ def main(arguments):
             num_neighbors=args.num_neighbors,
             args=args)
 
+        # print all the returned responses, and distance to input
         for nn, distance in zip(nns, distances):
             print('d: {}, {}'.format(
                 distance,
