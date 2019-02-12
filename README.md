@@ -37,25 +37,16 @@ For interaction with the model, the only files needed are the unique strings (`_
 
 ## Run Web Server
 
-`jann` is desiged to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses a performant uWSGI application server to launch the application.
-
-You can run as an http endpoint:
+`jann` is desiged to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses a performant gunicorn application server to launch the application.
 
 ```sh
-uwsgi --http 127.0.0.1:8001 -w wsgi:JAN
+gunicorn --bind 0.0.0.0:8000 app:JANN -w 4
 ```
 
-or, for a faster response time, serve it natively as:
-```sh
-uwsgi --socket :8001 -w wsgi:JANN
-```
-
-Once this is running, you can test the load on the server with [Locust](https://locust.io/).
-
-## Testing the load
+Once this is running, you can test the load on the server with [Locust](https://locust.io/), as defined in `locustfile.py`:
 
 ```sh
-locust --host=127.0.0.1:8001
+locust --host=http://0.0.0.0:8000
 ```
 
 ### Cornell Movie Dialog Database

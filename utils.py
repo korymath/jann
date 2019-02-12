@@ -335,7 +335,7 @@ class GenModelUSE(object):
 
         tf.logging.info('Interactive session is initialized...')
 
-    def inference(self, input_text, num_neighbors=10, args={}):
+    def inference(self, input_text, num_neighbors=10, use_sentence_piece=True):
         """Inference from nearest neighbor model."""
 
         # Handle the short input
@@ -347,7 +347,7 @@ class GenModelUSE(object):
         # Build a list of the user input
         user_input = [input_text]
 
-        if args.use_sentence_piece:
+        if use_sentence_piece:
             # process unencoded lines to values and IDs in sparse format
             values, indices, dense_shape = process_to_IDs_in_sparse_format(
               sp=self.sp, sentences=user_input)

@@ -4,14 +4,10 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask import make_response
-from flask import render_template
 
 import utils
 
 tf.logging.set_verbosity(tf.logging.DEBUG)
-
-# Parse the default arguments
-args = utils.parse_arguments()
 
 # Buil the USE model
 data_path = 'data/CMDC/'
@@ -75,7 +71,7 @@ def model_reply():
     # If the message exists, then use it to generate an inference
     if message:
         try:
-            gen_resp = gen_model_use.inference(message, args=args)
+            gen_resp = gen_model_use.inference(message)
             resp = {'fulfillmentText': gen_resp}
         except Exception as error:
             tf.logging.error('Generative model response error', error)
@@ -89,6 +85,7 @@ def model_reply():
 
 
 if __name__ == '__main__':
+    # Parse the default arguments
     JANN.config['TRAP_BAD_REQUEST_ERRORS'] = True
     JANN.run(
         debug=False,
