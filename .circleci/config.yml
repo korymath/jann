@@ -42,12 +42,11 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            coverage run --source=Jann setup.py test
-            coverage report
+            py.test --cov-report=xml --cov=Jann
 
       - store_artifacts:
           path: test-reports
           destination: test-reports
 
       - codecov/upload:
-        file: {{ coverage_report_filepath }}
+        file: coverage.xml
