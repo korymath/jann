@@ -1,0 +1,3 @@
+L1 +++$+++ u0 +++$+++ m0 +++$+++ CHAR1 +++$+++ This is the first line.
+L2 +++$+++ u2 +++$+++ m0 +++$+++ CHAR2 +++$+++ This is the second line.
+L3 +++$+++ u2 +++$+++ m0 +++$+++ CHAR2 +++$+++ This is the third line.

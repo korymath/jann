@@ -77,6 +77,8 @@ def parse_arguments(arguments=None):
 def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
     """Load line separated text files into list. """
 
+    dest = None
+    dest2 = None
     if dest_type == 'list':
         if not pairs:
             tempfile = io.open(
@@ -88,7 +90,6 @@ def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
                 if clean_string:
                     dest.append(clean_string)
             tempfile.close()
-            dest2 = None
         else:
             first_lines = []
             second_lines = []
@@ -103,11 +104,6 @@ def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
     elif dest_type == 'dict':
         with open(file_path, 'rb') as f:
             dest = pickle.load(f)
-        dest2 = None
-    else:
-        dest = None
-        dest2 = None
-        tf.logging.info('Bad destination data type specified.')
     return dest, dest2
 
 
@@ -156,7 +152,7 @@ def extract_pairs(conversations):
 
 
 def extract_pairs_from_lines(lines):
-    """Extract pairs from Cornell Movie Dialog Lines."""
+    """Extract pairs from raw lines."""
     collected_pairs = []
     for i in range(len(lines) - 1):
         first_line = lines[i].strip()
