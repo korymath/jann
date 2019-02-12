@@ -71,15 +71,3 @@ def test_extract_pairs_from_lines():
         test_lines, 'list', pairs=False, delimiter='\t')
     collected_pairs = extract_pairs_from_lines(lines)
     assert len(collected_pairs) == 49
-
-# def test_process_to_IDs_in_sparse_format(self):
-#     pass
-
-# def test_get_id_chunks(self):
-#     pass
-
-# def test_embed_lines(self):
-#     pass
-
-# def test_generative_model_use(self):
-#     pass

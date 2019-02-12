@@ -1,5 +1,7 @@
 import json
-from locust import HttpLocust, TaskSet, task
+from locust import task
+from locust import TaskSet
+from locust import HttpLocust
 
 
 headers = {
