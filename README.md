@@ -32,9 +32,12 @@ export TFHUB_CACHE_DIR=Jann/data/module
 # Make the TFHUB_CACHE_DIR
 mkdir ${TFHUB_CACHE_DIR}
 # Download and unpack the Universal Sentence Encoder Lite model (~25 MB)
-wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
-cd ${TFHUB_CACHE_DIR}
-mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
+if [ ! -f ${TFHUB_CACHE_DIR}/module_lite.tar.gz ]; then
+    echo "No module found, downloading..."
+    wget -nc 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
+    cd ${TFHUB_CACHE_DIR}
+    mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
+fi
 ```
 
 ## Interaction
