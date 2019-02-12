@@ -17,7 +17,9 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 
 ## Install and configure requirements
 
-`jann` is tested on macOS 10.14.
+Note: `jann` is tested on macOS 10.14.
+
+To run `jann` on your local system or a server, you will need to perform the following installation steps.
 
 ```sh
 # Configure a virtual environment
@@ -27,6 +29,8 @@ source venv/bin/activate
 pip install --upgrade pip
 # Install requirements
 pip install -r requirements.txt
+# Install Jann
+python setup.py install
 # Set environmental variable for TensorFlow Hub
 export TFHUB_CACHE_DIR=Jann/data/module
 # Make the TFHUB_CACHE_DIR
@@ -34,10 +38,39 @@ mkdir ${TFHUB_CACHE_DIR}
 # Download and unpack the Universal Sentence Encoder Lite model (~25 MB)
 if [ ! -f ${TFHUB_CACHE_DIR}/module_lite.tar.gz ]; then
     echo "No module found, downloading..."
-    wget -nc 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
+    wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
     cd ${TFHUB_CACHE_DIR}
     mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
+    cd ../../..
 fi
+```
+
+## Running Model Building
+
+`jann` is composed of several submodules, each of which can be run in sequence as follows:
+
+```sh
+source venv/bin/activate
+
+# Number of lines from input source to use
+export NUMTREES='100'
+# Number of neighbors to return
+export NUMNEIGHBORS='10'
+
+# Define the environmental variables
+export INFILE="data/CMDC/all_lines_50.txt"
+
+# Embed the lines using the encoder (Universal Sentence Encoder)
+python embed_lines.py --infile=${INFILE} --verbose &&
+
+# Process the embeddings and save as unique strings and numpy array
+python process_embeddings.py --infile=${INFILE} --verbose &&
+
+# Index the embeddings using an approximate nearest neighbor (annoy)
+python index_embeddings.py --infile=${INFILE} --verbose --num_trees=${NUMTREES} &&
+
+# Build a simple command line interaction for model testing
+python interact_with_model.py --infile=${INFILE} --verbose --num_neighbors=${NUMNEIGHBORS}
 ```
 
 ## Interaction
@@ -49,14 +82,19 @@ For interaction with the model, the only files needed are the unique strings (`_
 `jann` is desiged to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses a performant gunicorn application server to launch the application.
 
 ```sh
+cd Jann
 gunicorn --bind 0.0.0.0:8000 app:JANN -w 4
 ```
 
-Once this is running, you can test the load on the server with [Locust](https://locust.io/), as defined in `locustfile.py`:
+Once `jann` is running, in a new terminal window you can test the load on the server with [Locust](https://locust.io/), as defined in `Jann/tests/locustfile.py`:
 
 ```sh
+source venv/bin/activate
+cd Jann/tests
 locust --host=http://0.0.0.0:8000
 ```
+
+You can then navigate a web browser to [http://0.0.0.0:8089/](http://0.0.0.0:8089/), and simulate `N` users spawning at `M` users per second and making requests to `jann`.
 
 ### Cornell Movie Dialog Database
 
@@ -105,7 +143,7 @@ The guide for contributors can be found [here](https://github.com/korymath/jann/
 ## Tests
 
 ```sh
-python3 -m coverage run tests.py
+py.test --cov-report=xml --cov=Jann
 ```
 
 ## References

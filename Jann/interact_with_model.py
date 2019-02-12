@@ -47,7 +47,7 @@ def main(arguments):
         nns, distances = gen_model_use.inference(
             user_input,
             num_neighbors=args.num_neighbors,
-            args=args)
+            use_sentence_piece=args.use_sentence_piece)
 
         # print all the returned responses, and distance to input
         for nn, distance in zip(nns, distances):
