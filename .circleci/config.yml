@@ -45,6 +45,8 @@ jobs:
           command: |
             . venv/bin/activate
             coverage run --source=Jann setup.py test
+            coverage report
+            coveralls
 
       - store_artifacts:
           path: test-reports
