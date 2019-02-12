@@ -8,8 +8,10 @@ from flask import render_template
 
 import utils
 
-tf.logging.set_verbosity(tf.logging.WARN)
+tf.logging.set_verbosity(tf.logging.DEBUG)
 
+# Parse the default arguments
+args = utils.parse_arguments()
 
 # Buil the USE model
 data_path = 'data/CMDC/'
@@ -49,41 +51,47 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
-@JANN.route('/')
-def index():
-    return render_template('index.html')
-
-
 @JANN.route('/model_inference', methods=['POST', 'GET'])
 def model_reply():
     """Flask route to respond to inference request."""
-    if 'msg' in request.args:
-        resp = None
 
-    # direct testing through web interface
-    message = request.args.get('msg')
-    if len(message) > 1:
-        try:
-            resp = gen_model_use.inference(message)
-        except Exception as error:
-            tf.logging.error('Generative model response error', error)
-            resp = None
+    # Initialize a blank message and blank response
+    message = None
+    resp = None
+
+    # Log the request
+    tf.logging.info(request)
+
+    # If msg is set in the request arguments, this is direct to URL
+    if 'msg' in request.args:
+        message = request.args.get('msg')
+        tf.logging.info('message from msg argument: {}'.format(message))
     else:
-        # dialogflow request
+        # This is a dialogflow request, follow the Dialogflow protocol
         data_json = request.get_json(silent=True, force=True)
+        print(data_json)
         message = data_json["queryResult"]["queryText"]
 
-    if len(message) > 1:
+    # If the message exists, then use it to generate an inference
+    if message:
         try:
-            gen_resp = gen_model_use.inference(message)
+            gen_resp = gen_model_use.inference(message, args=args)
             resp = {'fulfillmentText': gen_resp}
         except Exception as error:
             tf.logging.error('Generative model response error', error)
             resp = {'fulfillmentText': 'None'}
+    else:
+        tf.logging.error('No message error')
+        resp = {'fulfillmentText': 'None'}
 
     # return the response in a json object
     return json.dumps(resp)
 
 
 if __name__ == '__main__':
-    JANN.run(debug=False, host='0.0.0.0', port=8000, use_reloader=True)
+    JANN.config['TRAP_BAD_REQUEST_ERRORS'] = True
+    JANN.run(
+        debug=False,
+        host='0.0.0.0',
+        port=8000,
+        use_reloader=False)

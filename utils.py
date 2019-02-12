@@ -1,6 +1,5 @@
 import io
 import csv
-import random
 import pickle
 import hashlib
 import argparse
@@ -266,7 +265,8 @@ def embed_lines(args, unencoded_lines, output_dict,
                         "Embedding: [{}, ...]\n".format(snippet))
 
                 # Encode a hash for the string
-                hash_object = hashlib.md5(chunk_unencoded_lines[i].encode('utf-8'))
+                hash_object = hashlib.md5(
+                    chunk_unencoded_lines[i].encode('utf-8'))
 
                 # Add a row to the dataframe
                 output_dict[hash_object.hexdigest()] = {
