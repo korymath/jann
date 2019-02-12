@@ -2,15 +2,15 @@
 run_private.sh
 
 .DS_Store
-data/.DS_Store
-data/botnik-sources/
-data/CMDC/__MACOSX/
-data/CMDC/movie_lines.txt
-data/CMDC/
-data/module/
-data/module/*
-data/modules/
-data/modules/*
+Jann/data/.DS_Store
+Jann/data/botnik-sources/
+Jann/data/CMDC/__MACOSX/
+Jann/data/CMDC/movie_lines.txt
+Jann/data/
+Jann/data/module/
+Jann/data/module/*
+Jann/data/modules/
+Jann/data/modules/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
