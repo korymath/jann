@@ -49,4 +49,4 @@ jobs:
           destination: test-reports
 
       - codecov/upload:
-        file: coverage.xml
+          file: coverage.xml
