@@ -20,16 +20,21 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 `jann` is tested on macOS 10.14.
 
 ```sh
-# Execute installation script
-chmod +x install.sh
-./install.sh
-```
-
-## Run jann
-
-```sh
-chmod +x run.sh
-./run.sh
+# Configure a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+# Upgrade Pip
+pip install --upgrade pip
+# Install requirements
+pip install -r requirements.txt
+# Set environmental variable for TensorFlow Hub
+export TFHUB_CACHE_DIR=Jann/data/module
+# Make the TFHUB_CACHE_DIR
+mkdir ${TFHUB_CACHE_DIR}
+# Download and unpack the Universal Sentence Encoder Lite model (~25 MB)
+wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
+cd ${TFHUB_CACHE_DIR}
+mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
 ```
 
 ## Interaction
