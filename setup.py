@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 setup(
     name="Jann",
-    verson="0.0.1",
+    verson="0.1.0",
     description="Jann is a Nearest Neighbour retrieval-based chatbot.",
     author="Kory Mathewson",
     author_email="korymath@gmail.com",

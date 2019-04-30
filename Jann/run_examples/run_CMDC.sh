@@ -1,4 +1,4 @@
-source venv/bin/activate
+# source venv/bin/activate
 
 # Number of lines from input source to use
 export NUMLINES='1000'

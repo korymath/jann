@@ -22,19 +22,25 @@ Note: `jann` is tested on macOS 10.14.
 To run `jann` on your local system or a server, you will need to perform the following installation steps.
 
 ```sh
-# Configure a virtual environment
+# Configure and activate virtual environment
 python3 -m venv venv
 source venv/bin/activate
+
 # Upgrade Pip
 pip install --upgrade pip
+
 # Install requirements
 pip install -r requirements.txt
+
 # Install Jann
 python setup.py install
+
 # Set environmental variable for TensorFlow Hub
 export TFHUB_CACHE_DIR=Jann/data/module
+
 # Make the TFHUB_CACHE_DIR
 mkdir ${TFHUB_CACHE_DIR}
+
 # Download and unpack the Universal Sentence Encoder Lite model (~25 MB)
 if [ ! -f ${TFHUB_CACHE_DIR}/module_lite.tar.gz ]; then
     echo "No module found, downloading..."
@@ -45,12 +51,24 @@ if [ ! -f ${TFHUB_CACHE_DIR}/module_lite.tar.gz ]; then
 fi
 ```
 
-## Running Model Building
+## (simple) Run Basic Example
+
+```sh
+cd Jann
+# chmod +x run_examples/run_CMDC.sh
+./run_examples/run_CMDC.sh
+```
+
+
+## (advanced) Running Model Building
 
 `jann` is composed of several submodules, each of which can be run in sequence as follows:
 
 ```sh
 source venv/bin/activate
+
+# Change directory to Jann
+cd Jann
 
 # Number of lines from input source to use
 export NUMTREES='100'
@@ -79,7 +97,7 @@ For interaction with the model, the only files needed are the unique strings (`_
 
 ## Run Web Server
 
-`jann` is desiged to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses a performant gunicorn application server to launch the application.
+`jann` is desiged to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses a performant gunicorn application server to launch the application with 4 workers.
 
 ```sh
 cd Jann
@@ -103,11 +121,14 @@ Download the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/C
 ```sh
 # Change directory to CMDC data subdirectory
 cd data/CMDC/
+
 # Download the corpurs
 wget http://www.cs.cornell.edu/~cristian/data/cornell_movie_dialogs_corpus.zip
+
 # Unzip the corpus and move to the main directory
 unzip cornell_movie_dialogs_corpus.zip
 mv cornell\ movie-dialogs\ corpus/movie_lines.txt movie_lines.txt
+
 # Change direcory to jann's main directory
 cd ../..
 ```
@@ -116,7 +137,7 @@ As an example, we might use the first 50 lines of movie dialogue from the [Corne
 
 ## Pairs
 
-Conversational dialogue is composed of sequences of utterances. The sequence can be seen as pairs of utterances: inputs and responses. Nearest neighbors to a given input will find neighbors which are semantically related to the input. By storing input<>response pairs, rather than only inputs, `jann` can respond with a response to similar inputs. This example is shown in `run_examples/run_CMDC_pairs.sh`.
+Conversational dialogue is composed of sequences of utterances. The sequence can be seen as pairs of utterances: inputs and responses. Nearest neighbours to a given input will find neighbours which are semantically related to the input. By storing input<>response pairs, rather than only inputs, `jann` can respond with a response to similar inputs. This example is shown in `run_examples/run_CMDC_pairs.sh`.
 
 ## Custom Datasets
 
