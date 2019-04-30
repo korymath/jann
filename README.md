@@ -97,7 +97,7 @@ For interaction with the model, the only files needed are the unique strings (`_
 
 ## Run Web Server
 
-`jann` is desiged to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses a performant gunicorn application server to launch the application with 4 workers.
+`jann` is designed to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses the performance-oriented gunicorn application server to launch the application with 4 workers.
 
 ```sh
 cd Jann
@@ -122,7 +122,7 @@ Download the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/C
 # Change directory to CMDC data subdirectory
 cd data/CMDC/
 
-# Download the corpurs
+# Download the corpus
 wget http://www.cs.cornell.edu/~cristian/data/cornell_movie_dialogs_corpus.zip
 
 # Unzip the corpus and move to the main directory
