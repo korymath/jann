@@ -154,9 +154,120 @@ Change change the line `export INFILE="data/CMDC/YOUR_FAVORITE_FILENAME.txt"` in
 
 You might connect it with a source from [Botnik Studio's Sources](http://github.com/botnikstudios/sources). You can find an example of the entire `jann` pipeline using the `pairs` configuration on a custom datasource in `run_examples/run_byron_pairs.sh`.
 
-## The Wiki
+## Prepare the Universal Sentence Encoder embedding module
 
-There is more information on the [Wiki](https://github.com/korymath/jann/wiki).
+Note from [TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder/2): The module performs best effort text input preprocessing, therefore it is not required to preprocess the data before applying the module.
+
+
+```sh
+mkdir data/modules
+export TFHUB_CACHE_DIR=data/modules
+
+# Lite model (25 MB)
+wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
+cd ${TFHUB_CACHE_DIR}
+mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
+
+# Standard Model (914 MB)
+wget 'https://alpha.tfhub.dev/google/universal-sentence-encoder/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_standard.tar.gz
+cd ${TFHUB_CACHE_DIR}
+mkdir -p universal-sentence-encoder-2 && tar -zxvf module_standard.tar.gz -C universal-sentence-encoder-2
+
+# Large Model (746 MB)
+wget 'https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_large.tar.gz
+cd ${TFHUB_CACHE_DIR}
+tar -zxvf module_large.tar.gz
+mkdir -p universal-sentence-encoder-large-3 && tar -zxvf module_large.tar.gz -C universal-sentence-encoder-large-3
+```
+
+## Annoy parameters
+
+There are two parameters for the Approximate Nearest Neighbour:
+* set `n_trees` as large as possible given the amount of memory you can afford,
+* set `search_k` as large as possible given the time constraints you have for the queries. This parameter is a interaction tradeoff between accuracy and speed.
+
+## Run details for cloud serving (e.g. Digital Ocean) using nginx and uwsgi
+
+You will need to configure your server with the necessary software:
+
+```sh
+sudo apt update
+sudo apt install python3-pip python3-dev python3-venv build-essential libssl-dev libffi-dev python3-setuptools
+sudo apt-get install nginx
+sudo /etc/init.d/nginx start    # start nginx
+```
+
+Then, you can reference a more in-depth guide [here](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html)
+
+You will need the uwsgi_params file, which is available in the nginx directory of the uWSGI distribution, or from https://github.com/nginx/nginx/blob/master/conf/uwsgi_params
+
+Copy it into your project directory. In a moment we will tell nginx to refer to it.
+
+`/etc/nginx/sites-available/JANN.conf`
+```sh
+# JANN.conf
+
+# the upstream component nginx needs to connect to
+upstream flask {
+    # for a web port socket
+    server 127.0.0.1:8001;
+}
+
+# configuration of the server
+server {
+    # the port your site will be served on
+    listen      8000;
+    # the domain name it will serve for
+    server_name IP; # substitute your machine's IP address or FQDN
+    charset     utf-8;
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        uwsgi_pass  flask;
+        # the uwsgi_params file you installed
+        include     /home/${USER}/jann/uwsgi_params;
+    }
+}
+```
+
+```
+sudo ln -s ~/path/to/your/mysite/mysite_nginx.conf /etc/nginx/sites-enabled/
+sudo /etc/init.d/nginx restart
+uwsgi --socket :8001 -w wsgi:JANN
+```
+
+
+## Common Errors/Warnings and Solutions
+
+```sh
+/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:205: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
+  return f(*args, **kwds)
+```
+Solution (for OSX 10.13):
+```sh
+pip install --ignore-installed --upgrade https://github.com/lakshayg/tensorflow-build/releases/download/tf1.9.0-macos-py27-py36/tensorflow-1.9.0-cp36-cp36m-macosx_10_13_x86_64.whl
+```
+
+### Error/Warning:
+```sh
+FileNotFoundError: [Errno 2] No such file or directory: 'data/CMDC/movie_lines.txt'
+```
+Solution:
+```sh
+Ensure that the input movie lines file is extracted to the correct path
+```
+
+### Error/Warning
+```sh
+ValueError: Signature 'spm_path' is missing from meta graph.
+```
+
+#### Solution:
+Currently `jann` is configured to use the `universal-sentence-encoder-lite` module from TFHub as it is small, lightweight, and ready for rapid deployment. This module depends on the [SentencePiece](https://github.com/google/sentencepiece) library and the SentencePiece model published with the module.
+
+You will need to make some minor code adjustments to use the heaviery modules (such as [universal-sentence-encoder](https://alpha.tfhub.dev/google/universal-sentence-encoder/2)
+and [universal-sentence-encoder-large](https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3).
+
 
 ## Start Contributing
 The guide for contributors can be found [here](https://github.com/korymath/jann/blob/master/CONTRIBUTING.md). It covers everything you need to know to start contributing to `jann`.
