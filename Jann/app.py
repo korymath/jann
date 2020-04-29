@@ -91,7 +91,7 @@ def model_reply():
         resp = {'fulfillmentText': 'None'}
 
     # return the response in a json object
-    return json.dumps(resp)
+    return jsonify(resp)
 
 
 if __name__ == '__main__':
