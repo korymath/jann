@@ -1,8 +1,9 @@
 import sys
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from annoy import AnnoyIndex
-
 import utils
+
+tf.disable_v2_behavior()
 
 
 def main(arguments):

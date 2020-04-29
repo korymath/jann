@@ -16,11 +16,17 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 
 ## Install and configure requirements
 
-Note: `jann` is tested on macOS 10.14.
+Note: `jann` development is tested on macOS 10.15.4 Catalina. Deployment is tested on Ubuntu.
 
 To run `jann` on your local system or a server, you will need to perform the following installation steps.
 
 ```sh
+# OSX: Install homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+# OSX: Install wget
+brew install wget
+
 # Configure and activate virtual environment
 python3 -m venv venv
 source venv/bin/activate
@@ -38,32 +44,61 @@ python setup.py install
 export TFHUB_CACHE_DIR=Jann/data/module
 
 # Make the TFHUB_CACHE_DIR
-mkdir ${TFHUB_CACHE_DIR}
+mkdir -p ${TFHUB_CACHE_DIR}
 
 # Download and unpack the Universal Sentence Encoder Lite model (~25 MB)
 if [ ! -f ${TFHUB_CACHE_DIR}/module_lite.tar.gz ]; then
-    echo "No module found, downloading..."
-    wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
-    cd ${TFHUB_CACHE_DIR}
-    mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
-    cd ../../..
+  echo "No module found, downloading..."
+  wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
+  cd ${TFHUB_CACHE_DIR}
+  mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
+  cd -
+else
+  echo "Module found!"
 fi
 ```
+
+### Download Cornell Movie Dialog Database
+
+Download the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html), and extract to `data/CMDC`.
+
+```sh
+# Change directory to CMDC data subdirectory
+mkdir data/CMDC
+cd data/CMDC/
+
+# Download the corpus
+wget http://www.cs.cornell.edu/~cristian/data/cornell_movie_dialogs_corpus.zip
+
+# Unzip the corpus and move lines and convos to the main directory
+unzip cornell_movie_dialogs_corpus.zip
+mv cornell\ movie-dialogs\ corpus/movie_lines.txt movie_lines.txt
+mv cornell\ movie-dialogs\ corpus/movie_conversations.txt movie_conversations.txt
+
+# Change direcory to jann's main directory
+cd ../..
+```
+
+As an example, we might use the first 50 lines of movie dialogue from the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html).
+
+You can set the number of lines from the corpus you want to use by changing the parameter `export NUMLINES='50'` in `run_examples/run_CMDC.sh`.
 
 ## (simple) Run Basic Example
 
 ```sh
 cd Jann
-# chmod +x run_examples/run_CMDC.sh
+# make sure that the run code is runnable
+chmod +x run_examples/run_CMDC.sh
+# run it
 ./run_examples/run_CMDC.sh
 ```
-
 
 ## (advanced) Running Model Building
 
 `jann` is composed of several submodules, each of which can be run in sequence as follows:
 
 ```sh
+# Ensure that the virtual environment is activated
 source venv/bin/activate
 
 # Change directory to Jann
@@ -94,12 +129,19 @@ python interact_with_model.py --infile=${INFILE} --verbose --num_neighbors=${NUM
 
 For interaction with the model, the only files needed are the unique strings (`_unique_strings.csv`) and the Annoy index (`.ann`) file. With the unique strings and the index file you can build a basic interaction. This is demonstrated in the `interact_with_model.py` file.
 
+## Pairs
+
+Conversational dialogue is composed of sequences of utterances. The sequence can be seen as pairs of utterances: inputs and responses. Nearest neighbours to a given input will find neighbours which are semantically related to the input. By storing input<>response pairs, rather than only inputs, `jann` can respond with a response to similar inputs. This example is shown in `run_examples/run_CMDC_pairs.sh`.
+
 ## Run Web Server
 
 `jann` is designed to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses the performance-oriented gunicorn application server to launch the application with 4 workers.
 
 ```sh
 cd Jann
+# run the pairs set up and test the interaction
+./run_examples/run_CMDC_pairs.sh
+# serve the pairs model
 gunicorn --bind 0.0.0.0:8000 app:JANN -w 4
 ```
 
@@ -113,50 +155,21 @@ locust --host=http://0.0.0.0:8000
 
 You can then navigate a web browser to [http://0.0.0.0:8089/](http://0.0.0.0:8089/), and simulate `N` users spawning at `M` users per second and making requests to `jann`.
 
-### Cornell Movie Dialog Database
-
-Download the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html), and extract to `data/CMDC`.
-
-```sh
-# Change directory to CMDC data subdirectory
-cd data/CMDC/
-
-# Download the corpus
-wget http://www.cs.cornell.edu/~cristian/data/cornell_movie_dialogs_corpus.zip
-
-# Unzip the corpus and move to the main directory
-unzip cornell_movie_dialogs_corpus.zip
-mv cornell\ movie-dialogs\ corpus/movie_lines.txt movie_lines.txt
-
-# Change direcory to jann's main directory
-cd ../..
-```
-
-As an example, we might use the first 50 lines of movie dialogue from the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html). You can set the number of lines from the corpus you want to use by changing the parameter `export NUMLINES='2048'` in `run_examples/run_CMDC.sh`.
-
-## Pairs
-
-Conversational dialogue is composed of sequences of utterances. The sequence can be seen as pairs of utterances: inputs and responses. Nearest neighbours to a given input will find neighbours which are semantically related to the input. By storing input<>response pairs, rather than only inputs, `jann` can respond with a response to similar inputs. This example is shown in `run_examples/run_CMDC_pairs.sh`.
-
 ## Custom Datasets
 
 You can use any dataset you want! Format your source text with a single entry on each line, as follows:
 
 ```sh
-# data in YOUR_FAVORITE_FILENAME.txt
+# data/custom_data/example.txt
 This is the first line.
-This is a response to the first line.
-This is a response to the second line.
+This is the second line, a response to the first line.
+This is the third line.
+This is the fourth line, a response to the third line.
 ```
 
-Change change the line `export INFILE="data/CMDC/YOUR_FAVORITE_FILENAME.txt"` in `run.sh`.
-
-You might connect it with a source from [Botnik Studio's Sources](http://github.com/botnikstudios/sources). You can find an example of the entire `jann` pipeline using the `pairs` configuration on a custom datasource in `run_examples/run_byron_pairs.sh`.
-
-## Prepare the Universal Sentence Encoder embedding module
+## Using other Universal Sentence Encoder embedding modules
 
 Note from [TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder/2): The module performs best effort text input preprocessing, therefore it is not required to preprocess the data before applying the module.
-
 
 ```sh
 mkdir data/modules
@@ -200,7 +213,7 @@ Then, you can reference a more in-depth guide [here](https://uwsgi-docs.readthed
 
 You will need the uwsgi_params file, which is available in the nginx directory of the uWSGI distribution, or from https://github.com/nginx/nginx/blob/master/conf/uwsgi_params
 
-Copy it into your project directory. In a moment we will tell nginx to refer to it.
+Copy the following into a file on your server.
 
 `/etc/nginx/sites-available/JANN.conf`
 ```sh
@@ -229,6 +242,7 @@ server {
 }
 ```
 
+Then, we tell nginx how to refer to the server
 ```
 sudo ln -s ~/path/to/your/mysite/mysite_nginx.conf /etc/nginx/sites-enabled/
 sudo /etc/init.d/nginx restart
@@ -267,7 +281,6 @@ Currently `jann` is configured to use the `universal-sentence-encoder-lite` modu
 You will need to make some minor code adjustments to use the heaviery modules (such as [universal-sentence-encoder](https://alpha.tfhub.dev/google/universal-sentence-encoder/2)
 and [universal-sentence-encoder-large](https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3).
 
-
 ## Start Contributing
 The guide for contributors can be found [here](https://github.com/korymath/jann/blob/master/CONTRIBUTING.md). It covers everything you need to know to start contributing to `jann`.
 
@@ -278,7 +291,6 @@ py.test --cov-report=xml --cov=Jann
 ```
 
 ## References
-
 * [Universal Sentence Encoder on TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder-lite/2)
 * [Cer, Daniel, et al. 'Universal sentence encoder.' arXiv preprint arXiv:1803.11175 (2018).](https://arxiv.org/abs/1803.11175)
 * [Danescu-Niculescu-Mizil, Cristian, and Lillian Lee. 'Chameleons in imagined conversations: A new approach to understanding coordination of linguistic style in dialogs.' Proceedings of the 2nd Workshop on Cognitive Modeling and Computational Linguistics. Association for Computational Linguistics, 2011.](https://dl.acm.org/citation.cfm?id=2021105)
@@ -288,6 +300,3 @@ py.test --cov-report=xml --cov=Jann
 `jann` is made with love by [Kory Mathewson](https://korymathewson.com).
 
 Icon made by [Freepik](http://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/).
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkorymath%2Fjann.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkorymath%2Fjann?ref=badge_large)

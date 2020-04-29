@@ -2,9 +2,10 @@ import os
 import csv
 import sys
 import numpy as np
-import tensorflow as tf
-
+import tensorflow.compat.v1 as tf
 import utils
+
+tf.disable_v2_behavior()
 
 
 def main(arguments):
@@ -18,10 +19,15 @@ def main(arguments):
     # movie conversations file
     movie_conversations_file = os.path.join(args.infile_path,
                                             'movie_conversations.txt')
+    tf.logging.info(
+      'CMDC movie_lines_path: {}'.format(movie_lines_file))
+    tf.logging.info(
+      'CMDC movie_converstions_path: {}'.format(movie_conversations_file))
 
     if not args.pairs:
         tf.logging.info(
             "Selecting and saving {} random lines...".format(args.num_lines))
+
         lines = []
         try:
             with open(movie_lines_file, encoding='iso-8859-1') as f:
@@ -49,10 +55,6 @@ def main(arguments):
     else:
         tf.logging.info(
           "Selecting and saving {} random pairs...".format(args.num_lines))
-        tf.logging.info(
-          'CMDC movie_lines_path: {}'.format(movie_lines_file))
-        tf.logging.info(
-          'CMDC movie_converstions_path: {}'.format(movie_conversations_file))
 
         movie_lines_fields = ["lineID", "characterID",
                               "movieID", "character", "text"]

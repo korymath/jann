@@ -1,12 +1,12 @@
 import json
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from flask import Flask
 from flask import request
 from flask import jsonify
 from flask import make_response
-
 import utils
 
+tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
 
 # Buil the USE model

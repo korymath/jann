@@ -1,13 +1,11 @@
-# source venv/bin/activate
-
+#!/bin/bash
 # Number of lines from input source to use
-export NUMPAIRS='182'
+export NUMPAIRS='2'
 export NUMTREES='100'
 export NUMNEIGHBORS='10'
 
 # Define the environmental variables
-export INFILE="data/botnik-sources/byron.txt"
-export INFILE="data/botnik-sources/byron_${NUMPAIRS}_pairs.txt"
+export INFILE="data/custom_data/example.txt"
 
 # Build the pairs from the input source
 python process_pairs_data.py --infile=${INFILE} \
