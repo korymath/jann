@@ -56,7 +56,7 @@ requests==2.21.0
 sentencepiece==0.1.82
 six==1.12.0
 tensorboard==1.13.1
-tensorflow==1.13.1
+tensorflow==1.15.2
 tensorflow-estimator==1.13.0
 tensorflow-hub==0.4.0
 termcolor==1.1.0
