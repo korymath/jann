@@ -1,3 +1,4 @@
+.vscode/
 .coveralls.yml
 run_private.sh
 
