@@ -5,10 +5,13 @@ import hashlib
 import argparse
 import numpy as np
 from tqdm import tqdm
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+
 import sentencepiece as spm
 import tensorflow_hub as hub
 from annoy import AnnoyIndex
+
+tf.disable_v2_behavior()
 
 
 def parse_arguments(arguments=None):

@@ -1,7 +1,8 @@
 import sys
-import tensorflow as tf
-
+import tensorflow.compat.v1 as tf
 import utils
+
+tf.disable_v2_behavior()
 
 
 def main(arguments):
