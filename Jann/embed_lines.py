@@ -17,12 +17,12 @@ def main(arguments):
         lines, response_lines = utils.load_data(
           args.infile, 'list', args.pairs)
     except FileNotFoundError as e:
-        tf.logging.log(tf.logging.ERROR, e)
+        tf.compat.v1.logging.log(tf.compat.v1.logging.ERROR, e)
         sys.exit(0)
-    tf.logging.info('{} lines in input file: {}'.format(
+    tf.compat.v1.logging.info('{} lines in input file: {}'.format(
       len(lines), args.infile))
     if response_lines:
-        tf.logging.info(
+        tf.compat.v1.logging.info(
           '{} response lines in input file: {}'.format(
             len(response_lines), args.infile))
 
@@ -30,7 +30,7 @@ def main(arguments):
     output_file_path = args.infile + '.embedded.pkl'
     if os.path.isfile(output_file_path):
         # if it does, load it in
-        tf.logging.info(
+        tf.compat.v1.logging.info(
           'Loading existing saved output file: {}'.format(
             output_file_path))
         with open(output_file_path, 'rb') as f:
@@ -49,7 +49,7 @@ def main(arguments):
                 unencoded_lines_responses.append(response_lines[i])
     else:
         # make a new dataframe
-        tf.logging.info(
+        tf.compat.v1.logging.info(
             'Creating new dictionary to save outputs')
         output_dict = {}
         unencoded_lines = lines
@@ -58,7 +58,7 @@ def main(arguments):
         else:
             unencoded_lines_responses = response_lines
 
-    tf.logging.info(
+    tf.compat.v1.logging.info(
         '{} new lines to encode...'.format(len(unencoded_lines)))
 
     if len(unencoded_lines) > 0:
@@ -71,14 +71,14 @@ def main(arguments):
         with open(output_file_path, 'wb') as f:
             pickle.dump(output_dict, f, pickle.HIGHEST_PROTOCOL)
 
-        tf.logging.info(
+        tf.compat.v1.logging.info(
             '{} lines embedded and saved. Quitting.'.format(
                 len(output_dict)))
     else:
-        tf.logging.info('No new lines encoded. Quitting.')
+        tf.compat.v1.logging.info('No new lines encoded. Quitting.')
 
     # Print the output file path to end
-    tf.logging.info('Output file: {}'.format(output_file_path))
+    tf.compat.v1.logging.info('Output file: {}'.format(output_file_path))
 
 
 if __name__ == '__main__':

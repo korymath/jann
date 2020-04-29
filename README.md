@@ -16,11 +16,17 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 
 ## Install and configure requirements
 
-Note: `jann` is tested on macOS 10.14.
+Note: `jann` development is tested on macOS 10.15.4 Catalina. Deployment is tested on Ubuntu.
 
 To run `jann` on your local system or a server, you will need to perform the following installation steps.
 
 ```sh
+# OSX: Install homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+# OSX: Install wget
+brew install wget
+
 # Configure and activate virtual environment
 python3 -m venv venv
 source venv/bin/activate
@@ -38,32 +44,60 @@ python setup.py install
 export TFHUB_CACHE_DIR=Jann/data/module
 
 # Make the TFHUB_CACHE_DIR
-mkdir ${TFHUB_CACHE_DIR}
+mkdir -p ${TFHUB_CACHE_DIR}
 
 # Download and unpack the Universal Sentence Encoder Lite model (~25 MB)
 if [ ! -f ${TFHUB_CACHE_DIR}/module_lite.tar.gz ]; then
-    echo "No module found, downloading..."
-    wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
-    cd ${TFHUB_CACHE_DIR}
-    mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
-    cd ../../..
+  echo "No module found, downloading..."
+  wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
+  cd ${TFHUB_CACHE_DIR}
+  mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
+  cd -
+else
+  echo "Module found!"
 fi
 ```
+
+### Download Cornell Movie Dialog Database
+
+Download the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html), and extract to `data/CMDC`.
+
+```sh
+# Change directory to CMDC data subdirectory
+mkdir data/CMDC
+cd data/CMDC/
+
+# Download the corpus
+wget http://www.cs.cornell.edu/~cristian/data/cornell_movie_dialogs_corpus.zip
+
+# Unzip the corpus and move to the main directory
+unzip cornell_movie_dialogs_corpus.zip
+mv cornell\ movie-dialogs\ corpus/movie_lines.txt movie_lines.txt
+
+# Change direcory to jann's main directory
+cd ../..
+```
+
+As an example, we might use the first 50 lines of movie dialogue from the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html).
+
+You can set the number of lines from the corpus you want to use by changing the parameter `export NUMLINES='50'` in `run_examples/run_CMDC.sh`.
 
 ## (simple) Run Basic Example
 
 ```sh
 cd Jann
-# chmod +x run_examples/run_CMDC.sh
+# make sure that the run code is runnable
+chmod +x run_examples/run_CMDC.sh
+# run it
 ./run_examples/run_CMDC.sh
 ```
-
 
 ## (advanced) Running Model Building
 
 `jann` is composed of several submodules, each of which can be run in sequence as follows:
 
 ```sh
+# Ensure that the virtual environment is activated
 source venv/bin/activate
 
 # Change directory to Jann
@@ -112,27 +146,6 @@ locust --host=http://0.0.0.0:8000
 ```
 
 You can then navigate a web browser to [http://0.0.0.0:8089/](http://0.0.0.0:8089/), and simulate `N` users spawning at `M` users per second and making requests to `jann`.
-
-### Cornell Movie Dialog Database
-
-Download the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html), and extract to `data/CMDC`.
-
-```sh
-# Change directory to CMDC data subdirectory
-cd data/CMDC/
-
-# Download the corpus
-wget http://www.cs.cornell.edu/~cristian/data/cornell_movie_dialogs_corpus.zip
-
-# Unzip the corpus and move to the main directory
-unzip cornell_movie_dialogs_corpus.zip
-mv cornell\ movie-dialogs\ corpus/movie_lines.txt movie_lines.txt
-
-# Change direcory to jann's main directory
-cd ../..
-```
-
-As an example, we might use the first 50 lines of movie dialogue from the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html). You can set the number of lines from the corpus you want to use by changing the parameter `export NUMLINES='2048'` in `run_examples/run_CMDC.sh`.
 
 ## Pairs
 
@@ -288,6 +301,3 @@ py.test --cov-report=xml --cov=Jann
 `jann` is made with love by [Kory Mathewson](https://korymathewson.com).
 
 Icon made by [Freepik](http://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/).
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkorymath%2Fjann.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkorymath%2Fjann?ref=badge_large)
