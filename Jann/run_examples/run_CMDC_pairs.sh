@@ -1,5 +1,4 @@
-# source venv/bin/activate
-
+#!/bin/bash
 # Number of lines from input source to use
 export NUMPAIRS='50'
 export NUMTREES='100'

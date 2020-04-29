@@ -160,17 +160,14 @@ You can then navigate a web browser to [http://0.0.0.0:8089/](http://0.0.0.0:808
 You can use any dataset you want! Format your source text with a single entry on each line, as follows:
 
 ```sh
-# data in YOUR_FAVORITE_FILENAME.txt
+# data/custom_data/example.txt
 This is the first line.
 This is the second line, a response to the first line.
-This is the third line, a response to the second line.
+This is the third line.
+This is the fourth line, a response to the third line.
 ```
 
-Change change the line `export INFILE="data/CMDC/YOUR_FAVORITE_FILENAME.txt"` in `run.sh`.
-
-You might connect it with a source from [Botnik Studio's Sources](http://github.com/botnikstudios/sources). You can find an example of the entire `jann` pipeline using the `pairs` configuration on a custom datasource in `run_examples/run_byron_pairs.sh`.
-
-## Prepare the Universal Sentence Encoder embedding module
+## Using other Universal Sentence Encoder embedding modules
 
 Note from [TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder/2): The module performs best effort text input preprocessing, therefore it is not required to preprocess the data before applying the module.
 
