@@ -1,4 +1,3 @@
-import json
 import tensorflow.compat.v1 as tf
 from flask import Flask
 from flask import request
@@ -8,6 +7,7 @@ import utils
 
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
+
 
 # Buil the USE model
 data_path = 'data/CMDC/'
