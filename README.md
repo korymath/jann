@@ -135,7 +135,8 @@ Conversational dialogue is composed of sequences of utterances. The sequence can
 
 ## Run Web Server
 
-`jann` is designed to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with Dialogflow. The web service runs using the Flask micro-framework and uses the performance-oriented gunicorn application server to launch the application with 4 workers.
+`jann` is designed to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with [Dialogflow Webhook Service](https://cloud.google.com/dialogflow/docs/fulfillment-webhook). The web service runs using the Flask micro-framework and uses the performance-oriented [gunicorn](https://gunicorn.org/) application server to launch the application with 4 workers.
+
 
 ```sh
 cd Jann
