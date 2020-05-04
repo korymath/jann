@@ -3,7 +3,10 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask import make_response
+from flask import render_template
 import utils
+
+import flask_monitoringdashboard as dashboard
 
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
@@ -39,12 +42,19 @@ except (OSError, IOError) as e:
 # Start the app JANN.
 JANN = Flask(__name__)
 JANN.config['SECRET_KEY'] = 'IAMASUPERSECRETKEYTHATNOONECANGUESS'
+dashboard.bind(JANN)
 
 
 @JANN.errorhandler(404)
 def not_found(error):
     """Flask route for 404 errors."""
     return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@JANN.route('/')
+def index():
+    return render_template('index.html',
+                            title='Home')
 
 
 @JANN.route('/model_inference', methods=['POST', 'GET'])
@@ -64,9 +74,12 @@ def model_reply():
         tf.logging.info('message from msg argument: {}'.format(message))
     else:
         # This is a dialogflow request, follow the Dialogflow protocol
-        data_json = request.get_json(silent=True, force=True)
+        data_json = request.get_json(silent=False, force=True)
         print(data_json)
-        message = data_json["queryResult"]["queryText"]
+        try:
+            message = data_json["queryResult"]["queryText"]
+        except TypeError as e:
+            tf.logging.debug(e)
 
     # If the message exists, then use it to generate an inference
     if message:

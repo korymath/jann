@@ -12,6 +12,7 @@ Jann/data/module/
 Jann/data/module/*
 Jann/data/modules/
 Jann/data/modules/*
+Jann/flask_monitoringdashboard.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

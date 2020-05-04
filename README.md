@@ -141,7 +141,9 @@ Conversational dialogue is composed of sequences of utterances. The sequence can
 cd Jann
 # run the pairs set up and test the interaction
 ./run_examples/run_CMDC_pairs.sh
-# serve the pairs model
+# start development server
+python app.py
+# serve the pairs model with gunicorn and 4 workers
 gunicorn --bind 0.0.0.0:8000 app:JANN -w 4
 ```
 

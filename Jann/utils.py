@@ -70,10 +70,10 @@ def parse_arguments(arguments=None):
         args.use_sentence_piece = True
 
     # Reduce logging output.
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.WARN)
     if args.verbose:
         tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.DEBUG)
-    else:
-        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.WARN)
+
     return args
 
 
