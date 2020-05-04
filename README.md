@@ -181,27 +181,14 @@ This is the fourth line, a response to the third line.
 
 ## Using other Universal Sentence Encoder embedding modules
 
-Note from [TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder/2): The module performs best effort text input preprocessing, therefore it is not required to preprocess the data before applying the module.
+There are [a collection of Universal Sentence Encoders](https://tfhub.dev/google/collections/universal-sentence-encoder/1) trained on a variety of data.
+
+Note from [TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder): The module performs best effort text input preprocessing, therefore it is not required to preprocess the data before applying the module.
 
 ```sh
-mkdir data/modules
-export TFHUB_CACHE_DIR=data/modules
-
-# Lite model (25 MB)
-wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
-cd ${TFHUB_CACHE_DIR}
-mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
-
 # Standard Model (914 MB)
-wget 'https://alpha.tfhub.dev/google/universal-sentence-encoder/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_standard.tar.gz
-cd ${TFHUB_CACHE_DIR}
-mkdir -p universal-sentence-encoder-2 && tar -zxvf module_standard.tar.gz -C universal-sentence-encoder-2
-
-# Large Model (746 MB)
-wget 'https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_large.tar.gz
-cd ${TFHUB_CACHE_DIR}
-tar -zxvf module_large.tar.gz
-mkdir -p universal-sentence-encoder-large-3 && tar -zxvf module_large.tar.gz -C universal-sentence-encoder-large-3
+wget 'https://tfhub.dev/google/universal-sentence-encoder/4?tf-hub-format=compressed' -O module_standard.tar.gz
+mkdir -p universal-sentence-encoder && tar -zxvf module_standard.tar.gz -C universal-sentence-encoder
 ```
 
 ## Annoy parameters
@@ -290,8 +277,8 @@ ValueError: Signature 'spm_path' is missing from meta graph.
 #### Solution:
 Currently `jann` is configured to use the `universal-sentence-encoder-lite` module from TFHub as it is small, lightweight, and ready for rapid deployment. This module depends on the [SentencePiece](https://github.com/google/sentencepiece) library and the SentencePiece model published with the module.
 
-You will need to make some minor code adjustments to use the heaviery modules (such as [universal-sentence-encoder](https://alpha.tfhub.dev/google/universal-sentence-encoder/2)
-and [universal-sentence-encoder-large](https://alpha.tfhub.dev/google/universal-sentence-encoder-large/3).
+You will need to make some minor code adjustments to use the heaviery modules (such as [universal-sentence-encoder](https://alpha.tfhub.dev/google/universal-sentence-encoder)
+and [universal-sentence-encoder-large](https://alpha.tfhub.dev/google/universal-sentence-encoder-large).
 
 ## Start Contributing
 The guide for contributors can be found [here](https://github.com/korymath/jann/blob/master/CONTRIBUTING.md). It covers everything you need to know to start contributing to `jann`.
