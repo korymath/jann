@@ -284,7 +284,7 @@ class GenModelUSE(object):
 
         # load the annoy index for mmap speed
         # Length of item vector that will be indexed
-        self.annoy_index = AnnoyIndex(512)
+        self.annoy_index = AnnoyIndex(512, metric='angular')
 
         # super fast, will just mmap the file
         self.annoy_index.load(self.annoy_index_path)

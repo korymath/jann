@@ -31,7 +31,7 @@ def main(arguments):
                            len(unique_embeddings[0])))
 
     # Length of item vector that will be indexed
-    nn_forest = AnnoyIndex(512)
+    nn_forest = AnnoyIndex(512, metric='angular')
 
     for i in range(len(unique_strings)):
         v = unique_embeddings[i]

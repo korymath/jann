@@ -287,7 +287,7 @@ The guide for contributors can be found [here](https://github.com/korymath/jann/
 ## Tests
 
 ```sh
-py.test --cov-report=xml --cov=Jann
+pytest --cov-report=xml --cov-report=html --cov=Jann
 ```
 
 ## References
