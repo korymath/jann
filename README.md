@@ -157,6 +157,15 @@ locust --host=http://0.0.0.0:8000
 
 You can then navigate a web browser to [http://0.0.0.0:8089/](http://0.0.0.0:8089/), and simulate `N` users spawning at `M` users per second and making requests to `jann`.
 
+## Testing the model by hand
+
+```sh
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"queryResult": {"queryText": "that sounds really depressing"}}' \
+  http://0.0.0.0:8000/model_inference
+```
+
 ## Custom Datasets
 
 You can use any dataset you want! Format your source text with a single entry on each line, as follows:

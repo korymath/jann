@@ -70,9 +70,9 @@ def parse_arguments(arguments=None):
         args.use_sentence_piece = True
 
     # Reduce logging output.
-    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.WARN)
+    tf.logging.set_verbosity(tf.logging.WARN)
     if args.verbose:
-        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.DEBUG)
+        tf.logging.set_verbosity(tf.logging.DEBUG)
 
     return args
 
@@ -96,7 +96,7 @@ def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
         else:
             first_lines = []
             second_lines = []
-            tf.compat.v1.logging.info('Loading pairs data')
+            tf.logging.info('Loading pairs data')
             with open(file_path, 'r', encoding='iso-8859-1') as f:
                 reader = csv.reader(f, delimiter=delimiter)
                 for row in reader:
@@ -255,12 +255,12 @@ def embed_lines(args, unencoded_lines, output_dict,
             for i, line_embedding in enumerate(
               np.array(chunk_line_embds).tolist()):
                 if args.verbose:
-                    tf.compat.v1.logging.info(
+                    tf.logging.info(
                         "Line: {}".format(chunk_unencoded_lines[i]))
-                    tf.compat.v1.logging.info(
+                    tf.logging.info(
                         "Embedding size: {}".format(len(line_embedding)))
                     snippet = ", ".join((str(x) for x in line_embedding[:3]))
-                    tf.compat.v1.logging.info(
+                    tf.logging.info(
                         "Embedding: [{}, ...]\n".format(snippet))
 
                 # Encode a hash for the string
@@ -332,7 +332,7 @@ class GenModelUSE(object):
             self.sp = spm.SentencePieceProcessor()
             self.sp.Load(spm_path)
 
-        tf.compat.v1.logging.info('Interactive session is initialized...')
+        tf.logging.info('Interactive session is initialized...')
 
     def inference(self, input_text, num_neighbors=10, use_sentence_piece=True):
         """Inference from nearest neighbor model."""
@@ -341,7 +341,7 @@ class GenModelUSE(object):
         if len(input_text) < 1:
             return 'Say something!'
 
-        tf.compat.v1.logging.info('Input text: {}'.format(input_text))
+        tf.logging.info('Input text: {}'.format(input_text))
 
         # Build a list of the user input
         user_input = [input_text]
@@ -369,7 +369,7 @@ class GenModelUSE(object):
               }
             )
 
-        tf.compat.v1.logging.info(
+        tf.logging.info(
           'Successfully generated {} embeddings of length {}.'.format(
             len(embeddings), len(embeddings[0])))
 
@@ -381,6 +381,6 @@ class GenModelUSE(object):
           query_vector, num_neighbors, search_k=-1, include_distances=True)
 
         # Log the ids
-        tf.compat.v1.logging.info('Nearest neighbor IDS: {}'.format(nns))
+        tf.logging.info('Nearest neighbor IDS: {}'.format(nns))
 
         return nns, distances

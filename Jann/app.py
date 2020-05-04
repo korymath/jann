@@ -8,6 +8,9 @@ import utils
 
 import flask_monitoringdashboard as dashboard
 
+# Parse the arguments
+args = utils.parse_arguments(arguments=None)
+
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
 
@@ -23,7 +26,7 @@ with open(unique_strings_path) as f:
 tf.logging.info('Loaded {} unique strings'.format(len(unique_strings)))
 
 # define the path of the nearest neighbor model to use
-annoy_index_path = data_path + 'all_lines_50.txt.ann'
+annoy_index_path = data_path + 'all_lines_50_pairs.txt.ann'
 
 # Load generative models from pickles to generate from scratch.
 try:
@@ -75,7 +78,7 @@ def model_reply():
     else:
         # This is a dialogflow request, follow the Dialogflow protocol
         data_json = request.get_json(silent=False, force=True)
-        print(data_json)
+        tf.logging.debug('JSON Data: {}'.format(data_json))
         try:
             message = data_json["queryResult"]["queryText"]
         except TypeError as e:
@@ -85,7 +88,6 @@ def model_reply():
     if message:
         try:
             nns, distances = gen_model_use.inference(message)
-
             # print all the returned responses, and distance to input
             for nn, distance in zip(nns, distances):
                 tf.logging.info('d: {}, {}'.format(
