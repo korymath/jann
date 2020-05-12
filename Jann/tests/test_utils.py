@@ -15,11 +15,11 @@ FIXTURE_DIR = os.path.join(
 
 test_lines = os.path.join(FIXTURE_DIR, 'test_lines.txt')
 test_pairs = os.path.join(FIXTURE_DIR, 'test_pairs.txt')
-test_CMDC_movie_lines = os.path.join(FIXTURE_DIR, 'test_CMDC_movie_lines.txt')
+test_CMDC_movie_lines = os.path.join(FIXTURE_DIR, 'movie_lines.txt')
 movie_lines_fields = [
     "lineID", "characterID", "movieID", "character", "text"]
 test_CMDC_movie_conversations = os.path.join(
-    FIXTURE_DIR, 'test_CMDC_movie_conversations.txt')
+    FIXTURE_DIR, 'movie_conversations.txt')
 movie_conversations_fields = [
     "character1ID", "character2ID", "movieID", "utteranceIDs"]
 

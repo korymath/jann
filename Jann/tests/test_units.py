@@ -8,6 +8,8 @@ from Jann.process_cornell_data import process_cornell_data
 from Jann.process_embeddings import process_embeddings
 from Jann.process_pairs_data import process_pairs_data
 
+from collections import namedtuple
+
 
 FIXTURE_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
@@ -16,9 +18,9 @@ FIXTURE_DIR = os.path.join(
 
 test_lines = os.path.join(FIXTURE_DIR, 'test_lines.txt')
 test_pairs = os.path.join(FIXTURE_DIR, 'test_pairs.txt')
-test_CMDC_movie_lines = os.path.join(FIXTURE_DIR, 'test_CMDC_movie_lines.txt')
+test_CMDC_movie_lines = os.path.join(FIXTURE_DIR, 'movie_lines.txt')
 test_CMDC_movie_lines_out = os.path.join(
-  FIXTURE_DIR, 'all_lines_test_CMDC_movie_lines.txt')
+  FIXTURE_DIR, 'all_lines.txt')
 movie_lines_fields = [
     "lineID", "characterID", "movieID", "character", "text"]
 test_CMDC_movie_conversations = os.path.join(
@@ -26,20 +28,21 @@ test_CMDC_movie_conversations = os.path.join(
 movie_conversations_fields = [
     "character1ID", "character2ID", "movieID", "utteranceIDs"]
 
-NUMLINES = '50'
-NUMTREES = '100'
-NUMNEIGHBORS = '10'
-SEARCHK = '-1'
-
-# Parse the arguments
-args = utils.parse_arguments()
+NUMLINES = 0
+NUMTREES = 100
+NUMNEIGHBORS = 10
+SEARCHK = -1
 
 
 def test_process_cornell_data():
-    args.infile_path = test_CMDC_movie_lines
-    args.outfile = test_CMDC_movie_lines_out
-    sstatus = process_cornell_data(args)
-    assert sstatus
+    # Get default arguments
+    TestArgs = namedtuple('TestArgs', 'infile_path outfile num_lines pairs')
+    args = TestArgs(infile_path=FIXTURE_DIR,
+                    outfile=test_CMDC_movie_lines_out,
+                    num_lines=NUMLINES,
+                    pairs=False)
+    status = process_cornell_data(args)
+    assert status
 
 
 def test_process_pairs_data():

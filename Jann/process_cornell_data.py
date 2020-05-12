@@ -8,11 +8,8 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 
 
-def process_cornell_data(arguments):
+def process_cornell_data(args):
     """Main run function for processing the Cornell Movie Dialog Data."""
-
-    # Parse the arguments
-    args = utils.parse_arguments(arguments)
 
     # movie lines file
     movie_lines_file = os.path.join(args.infile_path, 'movie_lines.txt')
@@ -94,4 +91,6 @@ def process_cornell_data(arguments):
 
 
 if __name__ == "__main__":
-    sys.exit(process_cornell_data(sys.argv[1:]))
+    # Parse the arguments
+    args = utils.parse_arguments(sys.argv[1:])
+    sys.exit(process_cornell_data(args))
