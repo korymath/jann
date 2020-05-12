@@ -6,12 +6,8 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 
 
-def process_embeddings(arguments):
+def process_embeddings(args):
     """Main run code for processing embeddings."""
-
-    # Parse the arguments
-    args = utils.parse_arguments(arguments)
-
     # load the embeddings data object
     path_to_embeddings = args.infile + '.embedded.pkl'
     embeddings, _ = utils.load_data(path_to_embeddings, 'dict')
@@ -45,4 +41,6 @@ def process_embeddings(arguments):
 
 
 if __name__ == '__main__':
-    sys.exit(process_embeddings(sys.argv[1:]))
+    # Parse the arguments
+    args = utils.parse_arguments(sys.argv[1:])
+    sys.exit(process_embeddings(args))

@@ -6,12 +6,8 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 
 
-def index_embeddings(arguments):
+def index_embeddings(args):
     """Main run function for indexing the embeddings."""
-
-    # Parse the arguments
-    args = utils.parse_arguments(arguments)
-
     unique_strings_path = args.infile + '.embedded.pkl_unique_strings.csv'
 
     # Load the unique lines
@@ -48,4 +44,6 @@ def index_embeddings(arguments):
 
 
 if __name__ == '__main__':
-    sys.exit(index_embeddings(sys.argv[1:]))
+    # Parse the arguments
+    args = utils.parse_arguments(sys.argv[1:])
+    sys.exit(index_embeddings(args))

@@ -5,12 +5,8 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 
 
-def interact_with_model(arguments):
+def interact_with_model(args):
     """Main run function for interacting with the model."""
-
-    # Parse the arguments
-    args = utils.parse_arguments(arguments)
-
     tf.logging.info('Loading unique strings.')
 
     data_path = args.infile

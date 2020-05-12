@@ -7,12 +7,8 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 
 
-def embed_lines(arguments):
+def embed_lines(args):
     """Main run function for embed lines."""
-
-    # Parse the arguments
-    args = utils.parse_arguments(arguments)
-
     # Build the input message list
     try:
         lines, response_lines = utils.load_data(
@@ -85,4 +81,6 @@ def embed_lines(arguments):
 
 
 if __name__ == '__main__':
-    sys.exit(embed_lines(sys.argv[1:]))
+    # Parse the arguments
+    args = utils.parse_arguments(sys.argv[1:])
+    sys.exit(embed_lines(args))

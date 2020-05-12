@@ -7,12 +7,8 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 
 
-def process_pairs_data(arguments):
+def process_pairs_data(args):
     """Main run function to process the pairs data."""
-
-    # Parse the arguments
-    args = utils.parse_arguments(arguments)
-
     tf.logging.info('Select and save {} random pairs...'.format(
       args.num_lines))
     tf.logging.info('Input file: {}'.format(args.infile))
@@ -37,4 +33,6 @@ def process_pairs_data(arguments):
 
 
 if __name__ == "__main__":
-    sys.exit(process_pairs_data(sys.argv[1:]))
+    # Parse the arguments
+    args = utils.parse_arguments(sys.argv[1:])
+    sys.exit(process_pairs_data(args))
