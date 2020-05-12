@@ -34,20 +34,20 @@ NUMTREES = 100
 NUMNEIGHBORS = 10
 SEARCHK = -1
 
-# Set some default TestArgs
+# Set some DefaultArgs
 filed_names = ('infile_path outfile num_lines pairs ' +
                'module_path use_sentence_piece infile ' +
                'delimiter verbose num_trees num_neighbors ' +
                'search_k')
 filed_names = filed_names.split(' ')
-TestArgs = namedtuple(typename='TestArgs',
+DefaultArgs = namedtuple(typename='DefaultArgs',
                       field_names=filed_names,
                       defaults=(None,) * len(filed_names))
 
 
 def test_process_cornell_data():
     """Test the processing of Cornell Movie Dialog Data."""
-    args = TestArgs(infile_path=FIXTURE_DIR,
+    args = DefaultArgs(infile_path=FIXTURE_DIR,
                     outfile=test_CMDC_movie_lines_out,
                     num_lines=NUMLINES,
                     pairs=False)
@@ -57,7 +57,7 @@ def test_process_cornell_data():
 
 def test_process_pairs_data():
     """Test the processing of Cornell Movie Dialog Pairs Data."""
-    args = TestArgs(infile=test_pairs,
+    args = DefaultArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True,
@@ -69,7 +69,7 @@ def test_process_pairs_data():
 def test_embed_lines():
     """Test the embedding of lines."""
     module_name = 'universal-sentence-encoder-lite-2'
-    args = TestArgs(infile=test_pairs,
+    args = DefaultArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True,
@@ -83,7 +83,7 @@ def test_embed_lines():
 def test_process_embeddings():
     """Test the processing of the embedding of lines."""
     module_name = 'universal-sentence-encoder-lite-2'
-    args = TestArgs(infile=test_pairs,
+    args = DefaultArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True,
@@ -97,7 +97,7 @@ def test_process_embeddings():
 def test_index_embeddings():
     """Test the indexing of the embeddings of lines."""
     module_name = 'universal-sentence-encoder-lite-2'
-    args = TestArgs(infile=test_pairs,
+    args = DefaultArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True,
@@ -112,7 +112,7 @@ def test_index_embeddings():
 def test_interact_with_model():
     """Test model interaction."""
     module_name = 'universal-sentence-encoder-lite-2'
-    args = TestArgs(infile=test_pairs,
+    args = DefaultArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True,
