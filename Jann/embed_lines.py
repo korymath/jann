@@ -2,12 +2,12 @@ import os
 import sys
 import pickle
 import tensorflow.compat.v1 as tf
-import utils
+import Jann.utils as utils
 
 tf.disable_v2_behavior()
 
 
-def main(arguments):
+def embed_lines(arguments):
     """Main run function for embed lines."""
 
     # Parse the arguments
@@ -83,4 +83,4 @@ def main(arguments):
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(embed_lines(sys.argv[1:]))

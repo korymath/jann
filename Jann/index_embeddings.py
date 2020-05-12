@@ -1,12 +1,12 @@
 import sys
 import tensorflow.compat.v1 as tf
 from annoy import AnnoyIndex
-import utils
+import Jann.utils as utils
 
 tf.disable_v2_behavior()
 
 
-def main(arguments):
+def index_embeddings(arguments):
     """Main run function for indexing the embeddings."""
 
     # Parse the arguments
@@ -46,4 +46,4 @@ def main(arguments):
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(index_embeddings(sys.argv[1:]))

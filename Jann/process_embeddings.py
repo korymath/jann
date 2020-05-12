@@ -1,12 +1,12 @@
 import sys
 import numpy as np
 import tensorflow.compat.v1 as tf
-import utils
+import Jann.utils as utils
 
 tf.disable_v2_behavior()
 
 
-def main(arguments):
+def process_embeddings(arguments):
     """Main run code for processing embeddings."""
 
     # Parse the arguments
@@ -43,4 +43,4 @@ def main(arguments):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    sys.exit(process_embeddings(sys.argv[1:]))

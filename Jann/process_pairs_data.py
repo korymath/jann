@@ -2,12 +2,12 @@ import csv
 import sys
 import numpy as np
 import tensorflow.compat.v1 as tf
-import utils
+import Jann.utils as utils
 
 tf.disable_v2_behavior()
 
 
-def main(arguments):
+def process_pairs_data(arguments):
     """Main run function to process the pairs data."""
 
     # Parse the arguments
@@ -35,4 +35,4 @@ def main(arguments):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(process_pairs_data(sys.argv[1:]))

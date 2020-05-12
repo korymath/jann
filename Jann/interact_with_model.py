@@ -1,11 +1,11 @@
 import sys
 import tensorflow.compat.v1 as tf
-import utils
+import Jann.utils as utils
 
 tf.disable_v2_behavior()
 
 
-def main(arguments):
+def interact_with_model(arguments):
     """Main run function for interacting with the model."""
 
     # Parse the arguments
@@ -58,4 +58,4 @@ def main(arguments):
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(interact_with_model(sys.argv[1:]))
