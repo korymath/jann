@@ -17,6 +17,8 @@ FIXTURE_DIR = os.path.join(
 test_lines = os.path.join(FIXTURE_DIR, 'test_lines.txt')
 test_pairs = os.path.join(FIXTURE_DIR, 'test_pairs.txt')
 test_CMDC_movie_lines = os.path.join(FIXTURE_DIR, 'test_CMDC_movie_lines.txt')
+test_CMDC_movie_lines_out = os.path.join(
+  FIXTURE_DIR, 'all_lines_test_CMDC_movie_lines.txt')
 movie_lines_fields = [
     "lineID", "characterID", "movieID", "character", "text"]
 test_CMDC_movie_conversations = os.path.join(
@@ -30,16 +32,14 @@ NUMNEIGHBORS = '10'
 SEARCHK = '-1'
 
 # Parse the arguments
-ARGS = utils.parse_arguments()
-print(ARGS)
+args = utils.parse_arguments()
 
 
 def test_process_cornell_data():
-    infile_path = test_CMDC_movie_lines
-    outfile = None
-    num_lines = 50
-    print(ARGS)
-    assert True
+    args.infile_path = test_CMDC_movie_lines
+    args.outfile = test_CMDC_movie_lines_out
+    sstatus = process_cornell_data(args)
+    assert sstatus
 
 
 def test_process_pairs_data():

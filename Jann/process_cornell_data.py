@@ -90,6 +90,7 @@ def process_cornell_data(arguments):
                     writer.writerow(item)
                 tf.logging.info("Wrote {} pairs to {}.".format(
                     len(collected_pairs), args.outfile))
+    return True
 
 
 if __name__ == "__main__":
