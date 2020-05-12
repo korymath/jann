@@ -37,7 +37,7 @@ SEARCHK = -1
 # Set some default TestArgs
 filed_names = ('infile_path outfile num_lines pairs ' +
                'module_path use_sentence_piece infile ' +
-               'delimeter verbose num_tress num_neighbors ' +
+               'delimiter verbose num_tress num_neighbors ' +
                'search_k')
 filed_names = filed_names.split(' ')
 TestArgs = namedtuple(typename='TestArgs',
@@ -57,22 +57,27 @@ def test_process_cornell_data():
 
 def test_process_pairs_data():
     """Test the processing of Cornell Movie Dialog Pairs Data."""
-    args = TestArgs(infile_path=FIXTURE_DIR,
+    args = TestArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
-                    pairs=True)
+                    pairs=True,
+                    delimiter='\t')
     status = process_pairs_data(args)
     assert status
 
 
 def test_embed_lines():
     """Test the embedding of lines."""
-    args = TestArgs(infile_path=FIXTURE_DIR,
+    args = TestArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
-                    pairs=True)
-    status = process_pairs_data(args)
+                    pairs=True,
+                    delimiter='\t',
+                    module_path=os.path.join(FIXTURE_DIR, 'universal-sentence-encoder-lite-2'),
+                    use_sentence_piece=True)
+    status = embed_lines(args)
     assert status
+
 
 def test_process_embeddings():
     """Test the processing of the embedding of lines."""
@@ -80,7 +85,7 @@ def test_process_embeddings():
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True)
-    status = process_pairs_data(args)
+    status = process_embeddings(args)
     assert status
 
 
@@ -90,7 +95,7 @@ def test_index_embeddings():
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True)
-    status = process_pairs_data(args)
+    status = index_embeddings(args)
     assert status
 
 
@@ -100,5 +105,5 @@ def test_interact_with_model():
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True)
-    status = process_pairs_data(args)
+    status = interact_with_model(args)
     assert status
