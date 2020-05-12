@@ -81,6 +81,8 @@ def embed_lines(arguments):
     # Print the output file path to end
     tf.logging.info('Output file: {}'.format(output_file_path))
 
+    return True
+
 
 if __name__ == '__main__':
     sys.exit(embed_lines(sys.argv[1:]))

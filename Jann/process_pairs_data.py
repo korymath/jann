@@ -33,6 +33,8 @@ def process_pairs_data(arguments):
     tf.logging.info('Wrote {} pairs to {}.'.format(
       args.num_lines, args.outfile))
 
+    return True
+
 
 if __name__ == "__main__":
     sys.exit(process_pairs_data(sys.argv[1:]))

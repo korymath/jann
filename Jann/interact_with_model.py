@@ -56,6 +56,8 @@ def interact_with_model(arguments):
                 distance,
                 unique_strings[nn].split(args.delimiter)))
 
+    return True
+
 
 if __name__ == '__main__':
     sys.exit(interact_with_model(sys.argv[1:]))

@@ -44,6 +44,8 @@ def index_embeddings(arguments):
 
     tf.logging.info('Index forest built {}'.format(output_path))
 
+    return True
+
 
 if __name__ == '__main__':
     sys.exit(index_embeddings(sys.argv[1:]))

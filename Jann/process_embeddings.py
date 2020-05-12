@@ -41,6 +41,8 @@ def process_embeddings(arguments):
     tf.logging.info(
       'Embedings shape {}'.format(all_embeddings_np.shape))
 
+    return True
+
 
 if __name__ == '__main__':
     sys.exit(process_embeddings(sys.argv[1:]))
