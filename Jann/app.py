@@ -1,18 +1,15 @@
-import tensorflow.compat.v1 as tf
 from flask import Flask
 from flask import request
 from flask import jsonify
 from flask import make_response
 from flask import render_template
-import utils
-
 import flask_monitoringdashboard as dashboard
 
-# Parse the arguments
-args = utils.parse_arguments(arguments=None)
-
+import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
+
+import Jann.utils as utils
 
 
 # Buil the USE model
@@ -57,7 +54,7 @@ def not_found(error):
 @JANN.route('/')
 def index():
     return render_template('index.html',
-                            title='Home')
+                           title='Home')
 
 
 @JANN.route('/model_inference', methods=['POST', 'GET'])

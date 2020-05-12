@@ -41,8 +41,15 @@ filed_names = ('infile_path outfile num_lines pairs ' +
                'search_k')
 filed_names = filed_names.split(' ')
 DefaultArgs = namedtuple(typename='DefaultArgs',
-                      field_names=filed_names,
-                      defaults=(None,) * len(filed_names))
+                         field_names=filed_names,
+                         defaults=(None,) * len(filed_names))
+
+
+def test_app():
+    """Test the Flask app to handle web requests."""
+    # from Jann.app import JANN
+    # print(JANN)
+    return True
 
 
 def test_process_cornell_data():
