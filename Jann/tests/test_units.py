@@ -37,7 +37,7 @@ SEARCHK = -1
 # Set some default TestArgs
 filed_names = ('infile_path outfile num_lines pairs ' +
                'module_path use_sentence_piece infile ' +
-               'delimiter verbose num_tress num_neighbors ' +
+               'delimiter verbose num_trees num_neighbors ' +
                'search_k')
 filed_names = filed_names.split(' ')
 TestArgs = namedtuple(typename='TestArgs',
@@ -68,12 +68,13 @@ def test_process_pairs_data():
 
 def test_embed_lines():
     """Test the embedding of lines."""
+    module_name = 'universal-sentence-encoder-lite-2'
     args = TestArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
                     pairs=True,
                     delimiter='\t',
-                    module_path=os.path.join(FIXTURE_DIR, 'universal-sentence-encoder-lite-2'),
+                    module_path=os.path.join(FIXTURE_DIR, module_name),
                     use_sentence_piece=True)
     status = embed_lines(args)
     assert status
@@ -81,29 +82,43 @@ def test_embed_lines():
 
 def test_process_embeddings():
     """Test the processing of the embedding of lines."""
-    args = TestArgs(infile_path=FIXTURE_DIR,
+    module_name = 'universal-sentence-encoder-lite-2'
+    args = TestArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
-                    pairs=True)
+                    pairs=True,
+                    delimiter='\t',
+                    module_path=os.path.join(FIXTURE_DIR, module_name),
+                    use_sentence_piece=True)
     status = process_embeddings(args)
     assert status
 
 
 def test_index_embeddings():
     """Test the indexing of the embeddings of lines."""
-    args = TestArgs(infile_path=FIXTURE_DIR,
+    module_name = 'universal-sentence-encoder-lite-2'
+    args = TestArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
-                    pairs=True)
+                    pairs=True,
+                    delimiter='\t',
+                    module_path=os.path.join(FIXTURE_DIR, module_name),
+                    use_sentence_piece=True,
+                    num_trees=NUMTREES)
     status = index_embeddings(args)
     assert status
 
 
 def test_interact_with_model():
     """Test model interaction."""
-    args = TestArgs(infile_path=FIXTURE_DIR,
+    module_name = 'universal-sentence-encoder-lite-2'
+    args = TestArgs(infile=test_pairs,
                     outfile=test_CMDC_movie_pairs_out,
                     num_lines=NUMLINES,
-                    pairs=True)
-    status = interact_with_model(args)
+                    pairs=True,
+                    delimiter='\t',
+                    module_path=os.path.join(FIXTURE_DIR, module_name),
+                    use_sentence_piece=True,
+                    num_trees=NUMTREES)
+    status = interact_with_model(args, debug=True)
     assert status

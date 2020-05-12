@@ -5,7 +5,7 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 
 
-def interact_with_model(args):
+def interact_with_model(args, debug=False):
     """Main run function for interacting with the model."""
     tf.logging.info('Loading unique strings.')
 
@@ -34,25 +34,26 @@ def interact_with_model(args):
         tf.logging.error(e)
         tf.logging.info('Error building generative model.')
 
-    # build a loop for interactive mode
-    while True:
-        # get user input
-        user_input = input('\nQuery Text: ')
-        # if user input is too short
-        if len(user_input) < 1:
-            continue
-        nns, distances = gen_model_use.inference(
-            user_input,
-            num_neighbors=args.num_neighbors,
-            use_sentence_piece=args.use_sentence_piece)
+    if debug:
+        return True
+    else:
+        # build a loop for interactive mode
+        while True:
+            # get user input
+            user_input = input('\nQuery Text: ')
+            # if user input is too short
+            if len(user_input) < 1:
+                continue
+            nns, distances = gen_model_use.inference(
+                user_input,
+                num_neighbors=args.num_neighbors,
+                use_sentence_piece=args.use_sentence_piece)
 
-        # print all the returned responses, and distance to input
-        for nn, distance in zip(nns, distances):
-            print('d: {}, {}'.format(
-                distance,
-                unique_strings[nn].split(args.delimiter)))
-
-    return True
+            # print all the returned responses, and distance to input
+            for nn, distance in zip(nns, distances):
+                print('d: {}, {}'.format(
+                    distance,
+                    unique_strings[nn].split(args.delimiter)))
 
 
 if __name__ == '__main__':
