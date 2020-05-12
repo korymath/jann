@@ -173,6 +173,11 @@ curl --header "Content-Type: application/json" \
   http://0.0.0.0:8000/model_inference
 ```
 
+Response:
+```sh
+{"fulfillmentText":"Oh, come on, man. Tell me you wouldn't love it!"}
+```
+
 ## Custom Datasets
 
 You can use any dataset you want! Format your source text with a single entry on each line, as follows:
