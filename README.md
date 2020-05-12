@@ -16,7 +16,7 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 
 ## Install and configure requirements
 
-Note: `jann` development is tested on macOS 10.15.4 Catalina. Deployment is tested on Ubuntu.
+Note: `jann` development is tested with Python 3.7 on macOS 10.15.4 Catalina. Deployment is tested on Ubuntu.
 
 To run `jann` on your local system or a server, you will need to perform the following installation steps.
 
@@ -28,7 +28,7 @@ To run `jann` on your local system or a server, you will need to perform the fol
 brew install wget
 
 # Configure and activate virtual environment
-python3 -m venv venv
+python3.7 -m venv venv
 source venv/bin/activate
 
 # Upgrade Pip
@@ -82,6 +82,12 @@ cd ../..
 As an example, we might use the first 50 lines of movie dialogue from the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html).
 
 You can set the number of lines from the corpus you want to use by changing the parameter `export NUMLINES='50'` in `run_examples/run_CMDC.sh`.
+
+## Tests
+
+```sh
+pytest --cov-report=xml --cov-report=html --cov=Jann
+```
 
 ## (simple) Run Basic Example
 
@@ -282,12 +288,6 @@ and [universal-sentence-encoder-large](https://alpha.tfhub.dev/google/universal-
 
 ## Start Contributing
 The guide for contributors can be found [here](https://github.com/korymath/jann/blob/master/CONTRIBUTING.md). It covers everything you need to know to start contributing to `jann`.
-
-## Tests
-
-```sh
-pytest --cov-report=xml --cov-report=html --cov=Jann
-```
 
 ## References
 * [Universal Sentence Encoder on TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder-lite/2)

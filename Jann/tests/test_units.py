@@ -35,11 +35,14 @@ NUMNEIGHBORS = 10
 SEARCHK = -1
 
 # Set some default TestArgs
+filed_names = ('infile_path outfile num_lines pairs ' +
+               'module_path use_sentence_piece infile ' +
+               'delimeter verbose num_tress num_neighbors ' +
+               'search_k')
+filed_names = filed_names.split(' ')
 TestArgs = namedtuple(typename='TestArgs',
-                      field_names=('infile_path outfile num_lines pairs ' +
-                       'module_path use_sentence_piece infile ' +
-                       'delimeter verbose num_tress num_neighbors ' +
-                       'search_k'), defaults=(None,))
+                      field_names=filed_names,
+                      defaults=(None,) * len(filed_names))
 
 
 def test_process_cornell_data():
