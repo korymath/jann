@@ -1,6 +1,6 @@
 #!/bin/bash
 # Number of lines from input source to use
-export NUMPAIRS='10000'
+export NUMPAIRS='100000'
 export NUMTREES='100'
 export NUMNEIGHBORS='10'
 export SEARCHK='-1'
