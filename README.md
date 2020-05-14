@@ -154,6 +154,15 @@ python app.py
 gunicorn --bind 0.0.0.0:8000 app:JANN -w 4
 ```
 
+## Monitoring
+
+It is helpful to see a Flask Monitoring dashboard to monitor statistics on the bot. There is a [Flask-MonitoringDashboard](https://flask-monitoringdashboard.readthedocs.io/en/v1.13.0/) which is already installed as part of Jann, see [Jann/app.py](https://github.com/korymath/jann/blob/4cf3cd8ff687f250f78c898f8de7420f29f868cc/Jann/app.py#L45
+).
+
+To view the dashboard, navigate to http://0.0.0.0:8000/dashboard. The default user/pass is: `admin` / `admin`.
+
+## Load / Lag Testing with Locust
+
 Once `jann` is running, in a new terminal window you can test the load on the server with [Locust](https://locust.io/), as defined in `Jann/tests/locustfile.py`:
 
 ```sh
