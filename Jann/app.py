@@ -16,6 +16,11 @@ tf.logging.set_verbosity(tf.logging.DEBUG)
 num_samples = 100000
 data_key = 'all_lines_{}_pairs'.format(num_samples)
 
+# Do we want to return the nearest neighbor?
+# sample_from_n_neighbors = 1
+# or sample from the nearest N neighbors?
+sample_from_n_neighbors = 5
+
 # Buil the USE model
 data_path = 'data/CMDC/'
 model_name = '{}.txt.embedded.pkl_unique_strings.csv'.format(
@@ -96,13 +101,7 @@ def model_reply():
                     distance,
                     unique_strings[nn].split('\t')))  # args.delimiter
 
-
-            # for example we can take the nearest neighbor
-            sample_from_n_neighbors = 1
-
-            # or sample from the nearest N neighbors
-            sample_from_n_neighbors = 5
-
+            # Sample from the closest N neighbors
             neighbor_sample = random.choice(nns[:sample_from_n_neighbors])
 
             # recall the neighbor is index 0 and the response is index 1

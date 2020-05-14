@@ -12,7 +12,7 @@ python process_pairs_data.py --infile=${INFILE} \
 --outfile=${INFILE} --num_lines=${NUMPAIRS} --verbose
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
-python embed_lines.py --infile=${INFILE} --verbose --pairs
+python embed_lines.py --infile=${INFILE} --pairs --verbose
 
 # Process the embeddings and save as unique strings and numpy array
 python process_embeddings.py --infile=${INFILE} --pairs --verbose
