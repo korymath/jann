@@ -1,7 +1,7 @@
 # jann
 [![CircleCI](https://circleci.com/gh/korymath/jann.svg?style=svg)](https://circleci.com/gh/korymath/jann)
 [![codecov](https://codecov.io/gh/korymath/jann/branch/master/graph/badge.svg)](https://codecov.io/gh/korymath/jann)
-[![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
+[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-376/)
 [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 Hi. I am `jann`. I am a retrieval-based chatbot. I would make a great baseline.
@@ -171,6 +171,11 @@ curl --header "Content-Type: application/json" \
   --request POST \
   --data '{"queryResult": {"queryText": "that sounds really depressing"}}' \
   http://0.0.0.0:8000/model_inference
+```
+
+Response:
+```sh
+{"fulfillmentText":"Oh, come on, man. Tell me you wouldn't love it!"}
 ```
 
 ## Custom Datasets
