@@ -95,10 +95,13 @@ def model_reply():
                     distance,
                     unique_strings[nn].split('\t')))  # args.delimiter
 
-            # for example we can take the response (index 1)
-            # to the closest neighbor
+            # for example we can take the response
+            # recall the neighbor is index 0
+            # and the response is index 1
             gen_resp = unique_strings[nns[0]].split('\t')[1]
             resp = {'fulfillmentText': gen_resp}
+
+            # or we can can sample from the top N responses
         except Exception as error:
             tf.logging.error('Generative model response error', error)
             resp = {'fulfillmentText': 'None'}
