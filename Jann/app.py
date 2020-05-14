@@ -1,3 +1,5 @@
+import Jann.utils as utils
+
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -9,12 +11,14 @@ import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
 
-import Jann.utils as utils
 
+num_samples = 100000
+data_key = 'all_lines_{}_pairs'.format(num_samples)
 
 # Buil the USE model
 data_path = 'data/CMDC/'
-model_name = 'all_lines_50_pairs.txt.embedded.pkl_unique_strings.csv'
+model_name = '{}.txt.embedded.pkl_unique_strings.csv'.format(
+  data_key)
 unique_strings_path = (data_path + model_name)
 
 # load the unique lines
@@ -23,7 +27,7 @@ with open(unique_strings_path) as f:
 tf.logging.info('Loaded {} unique strings'.format(len(unique_strings)))
 
 # define the path of the nearest neighbor model to use
-annoy_index_path = data_path + 'all_lines_50_pairs.txt.ann'
+annoy_index_path = data_path + '{}.txt.ann'.format(data_key)
 
 # Load generative models from pickles to generate from scratch.
 try:
