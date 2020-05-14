@@ -12,17 +12,17 @@ export TFHUB_CACHE_DIR=data/module
 
 # Extract the raw lines to a single file:
 python process_cornell_data.py --infile_path=${INFILEPATH} \
---outfile=${INFILE} --num_lines=${NUMLINES} &&
+--outfile=${INFILE} --num_lines=${NUMLINES}
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
-python embed_lines.py --infile=${INFILE} --verbose &&
+python embed_lines.py --infile=${INFILE} --verbose
 
 # Process the embeddings and save as unique strings and numpy array
-python process_embeddings.py --infile=${INFILE} --verbose &&
+python process_embeddings.py --infile=${INFILE} --verbose
 
 # Index the embeddings using an approximate nearest neighbor (annoy)
 python index_embeddings.py --infile=${INFILE} --verbose \
---num_trees=${NUMTREES} &&
+--num_trees=${NUMTREES}
 
 # Build a simple command line interaction for model testing
 python interact_with_model.py --infile=${INFILE} --verbose \

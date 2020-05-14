@@ -57,4 +57,6 @@ def interact_with_model(args, debug=False):
 
 
 if __name__ == '__main__':
-    sys.exit(interact_with_model(sys.argv[1:]))
+    # Parse the arguments
+    args = utils.parse_arguments(sys.argv[1:])
+    sys.exit(interact_with_model(args))

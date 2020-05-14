@@ -20,7 +20,7 @@ def parse_arguments(arguments=None):
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    default_module = 'data/module/universal-sentence-encoder-4'
+    default_module = 'data/module/universal-sentence-encoder-lite-2'
     parser.add_argument('--module_path',
                         help='Specify the local encoder model path',
                         default=default_module)
