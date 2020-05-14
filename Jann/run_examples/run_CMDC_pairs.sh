@@ -18,7 +18,7 @@ python process_cornell_data.py --infile_path=${INFILEPATH} \
 python embed_lines.py --infile=${INFILE} --pairs --verbose
 
 # Process the embeddings and save as unique strings and numpy array
-python process_embeddings.py --infile=${INFILE} --verbose --pairs
+python process_embeddings.py --infile=${INFILE} --pairs --verbose
 
 # Index the embeddings using an approximate nearest neighbor (annoy)
 python index_embeddings.py --infile=${INFILE} --verbose \

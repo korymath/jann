@@ -12,7 +12,7 @@ export TFHUB_CACHE_DIR=data/module
 
 # Extract the raw lines to a single file:
 python process_cornell_data.py --infile_path=${INFILEPATH} \
---outfile=${INFILE} --num_lines=${NUMLINES}
+--outfile=${INFILE} --num_lines=${NUMLINES} --verbose
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
 python embed_lines.py --infile=${INFILE} --verbose
