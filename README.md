@@ -64,8 +64,8 @@ Download the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/C
 
 ```sh
 # Change directory to CMDC data subdirectory
-mkdir data/CMDC
-cd data/CMDC/
+mkdir -p Jann/data/CMDC
+cd Jann/data/CMDC/
 
 # Download the corpus
 wget http://www.cs.cornell.edu/~cristian/data/cornell_movie_dialogs_corpus.zip
