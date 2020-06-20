@@ -9,11 +9,11 @@ from flask import render_template
 import flask_monitoringdashboard as dashboard
 
 import tensorflow.compat.v1 as tf
+
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
 
-
-num_samples = 100000
+num_samples = 0
 data_key = 'all_lines_{}_pairs'.format(num_samples)
 
 # Do we want to return the nearest neighbor?

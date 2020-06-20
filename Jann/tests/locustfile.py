@@ -1,6 +1,6 @@
 import json
 from locust import task
-from locust import TaskSet
+from locust import between
 from locust import HttpUser
 
 headers = {
@@ -16,13 +16,8 @@ data = {
   }
 
 
-class UserBehavior(TaskSet):
-    @task(1)
-    def post_to_reply(self):
-        self.client.post("/model_inference", json.dumps(data), headers=headers)
-
-
 class WebsiteUser(HttpUser):
-    task_set = UserBehavior
-    min_wait = 5000
-    max_wait = 9000
+  wait_time = between(5, 9)
+  @task(1)
+  def post_to_reply(self):
+    self.client.post("/model_inference", json.dumps(data), headers=headers)
