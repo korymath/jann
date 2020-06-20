@@ -1,8 +1,7 @@
 import json
 from locust import task
 from locust import TaskSet
-from locust import HttpLocust
-
+from locust import HttpUser
 
 headers = {
   "Accept": "application/json",
@@ -23,7 +22,7 @@ class UserBehavior(TaskSet):
         self.client.post("/model_inference", json.dumps(data), headers=headers)
 
 
-class WebsiteUser(HttpLocust):
+class WebsiteUser(HttpUser):
     task_set = UserBehavior
     min_wait = 5000
     max_wait = 9000
