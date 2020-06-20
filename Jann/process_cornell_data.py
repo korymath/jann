@@ -74,7 +74,8 @@ def process_cornell_data(args):
             collected_pairs = utils.extract_pairs(conversations)
             tf.logging.info(
                 'Total of {} pairs'.format(len(collected_pairs)))
-            if int(args.num_lines) != 0:
+            if (int(args.num_lines) != 0 and 
+                (int(args.num_lines) < len(collected_pairs))):
                 random_idxs = np.random.choice(
                   len(collected_pairs), args.num_lines, replace=False)
                 for random_id in random_idxs:
