@@ -1,6 +1,8 @@
 import sys
-import tensorflow.compat.v1 as tf
+
+import tensorflow.compat.v1 as tf  # type: ignore
 from annoy import AnnoyIndex
+
 import Jann.utils as utils
 
 tf.disable_v2_behavior()

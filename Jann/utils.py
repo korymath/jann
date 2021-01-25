@@ -1,15 +1,16 @@
-import io
-import csv
-import pickle
-import hashlib
 import argparse
-import numpy as np
-from tqdm import tqdm
-import tensorflow.compat.v1 as tf
+import csv
+import hashlib
+import io
+import pickle
 
+import numpy as np
+from numpy.lib.function_base import _parse_input_dimensions
 import sentencepiece as spm
+import tensorflow.compat.v1 as tf  # type: ignore
 import tensorflow_hub as hub
 from annoy import AnnoyIndex
+from tqdm import tqdm
 
 tf.disable_v2_behavior()
 
@@ -85,7 +86,7 @@ def load_data(file_path, dest_type, pairs=False, delimiter='\t'):
     if dest_type == 'list':
         if not pairs:
             tempfile = io.open(
-              file_path, 'r', encoding="iso-8859-1", errors='ignore')
+                file_path, 'r', encoding="iso-8859-1", errors='ignore')
             dest = []
             for line in tempfile:
                 clean_string = line.strip()
@@ -196,8 +197,9 @@ def embed_lines(args, unencoded_lines, output_dict,
     with tf.Session(config=config) as session:
         # initialize the variables
         session.run(
-          [tf.global_variables_initializer(), tf.tables_initializer()])
+            [tf.global_variables_initializer(), tf.tables_initializer()])
 
+        sp, embeddings, input_placeholder = None, None, None
         if args.use_sentence_piece:
             # spm_path now contains a path to the SentencePiece
             # model stored inside the TF-Hub module
@@ -208,12 +210,12 @@ def embed_lines(args, unencoded_lines, output_dict,
             # build an input placeholder
             with tf.device('/gpu:0'):
                 input_placeholder = tf.sparse_placeholder(
-                  tf.int64, shape=[None, None])
+                    tf.int64, shape=[None, None])
                 embeddings = module(inputs=dict(
-                  values=input_placeholder.values,
-                  indices=input_placeholder.indices,
-                  dense_shape=input_placeholder.dense_shape
-                  )
+                    values=input_placeholder.values,
+                    indices=input_placeholder.indices,
+                    dense_shape=input_placeholder.dense_shape
+                )
                 )
 
         # size of chunk is how many lines will be encoded
@@ -223,7 +225,7 @@ def embed_lines(args, unencoded_lines, output_dict,
         # ensure that every line has a response
         assert len(unencoded_lines) == len(unencoded_lines_resps)
         all_id_chunks = get_id_chunks(
-          range(len(unencoded_lines)), size_of_chunk)
+            range(len(unencoded_lines)), size_of_chunk)
 
         max_iter = len(unencoded_lines) // size_of_chunk
         for id_chunk in tqdm(all_id_chunks, total=max_iter):
@@ -234,7 +236,7 @@ def embed_lines(args, unencoded_lines, output_dict,
             if args.use_sentence_piece:
                 # process unencoded lines to values and IDs in sparse format
                 values, indices, dense_shape = process_to_IDs_in_sparse_format(
-                  sp=sp, sentences=chunk_unencoded_lines)
+                    sp=sp, sentences=chunk_unencoded_lines)
 
                 # run the session
                 with tf.device('/gpu:0'):
@@ -249,11 +251,11 @@ def embed_lines(args, unencoded_lines, output_dict,
             else:
                 with tf.device('/gpu:0'):
                     chunk_line_embds = session.run(
-                      module(chunk_unencoded_lines))
+                        module(chunk_unencoded_lines))
 
             # hash the object into the full output dataframe
             for i, line_embedding in enumerate(
-              np.array(chunk_line_embds).tolist()):
+                    np.array(chunk_line_embds).tolist()):
                 if args.verbose:
                     tf.logging.info(
                         "Line: {}".format(chunk_unencoded_lines[i]))
@@ -269,9 +271,9 @@ def embed_lines(args, unencoded_lines, output_dict,
 
                 # Add a row to the dataframe
                 output_dict[hash_object.hexdigest()] = {
-                  'line': chunk_unencoded_lines[i],
-                  'line_embedding': line_embedding,
-                  'response': chunck_unenc_resp[i]
+                    'line': chunk_unencoded_lines[i],
+                    'line_embedding': line_embedding,
+                    'response': chunck_unenc_resp[i]
                 }
     return output_dict
 
@@ -297,19 +299,19 @@ class GenModelUSE(object):
             if use_sentence_piece:
                 # build an input placeholder
                 self.input_placeholder = tf.sparse_placeholder(
-                  tf.int64, shape=[None, None])
+                    tf.int64, shape=[None, None])
 
                 # build an input / output from the placeholders
                 self.embeddings = module(inputs=dict(
                     values=self.input_placeholder.values,
                     indices=self.input_placeholder.indices,
                     dense_shape=self.input_placeholder.dense_shape
-                  )
+                )
                 )
             else:
                 # build an input placeholder
                 self.input_placeholder = tf.placeholder(
-                  tf.string, shape=(None))
+                    tf.string, shape=(None))
                 self.embeddings = module(self.input_placeholder)
 
             init_op = tf.group([tf.global_variables_initializer(),
@@ -349,36 +351,36 @@ class GenModelUSE(object):
         if use_sentence_piece:
             # process unencoded lines to values and IDs in sparse format
             values, indices, dense_shape = process_to_IDs_in_sparse_format(
-              sp=self.sp, sentences=user_input)
+                sp=self.sp, sentences=user_input)
 
             # run the session
             # Get embedding of the input text
             embeddings = self.sess.run(
-              self.embeddings,
-              feed_dict={
-                self.input_placeholder.values: values,
-                self.input_placeholder.indices: indices,
-                self.input_placeholder.dense_shape: dense_shape
-              }
+                self.embeddings,
+                feed_dict={
+                    self.input_placeholder.values: values,
+                    self.input_placeholder.indices: indices,
+                    self.input_placeholder.dense_shape: dense_shape
+                }
             )
         else:
             embeddings = self.sess.run(
-              self.embeddings,
-              feed_dict={
-                self.input_placeholder: user_input
-              }
+                self.embeddings,
+                feed_dict={
+                    self.input_placeholder: user_input
+                }
             )
 
         tf.logging.info(
-          'Successfully generated {} embeddings of length {}.'.format(
-            len(embeddings), len(embeddings[0])))
+            'Successfully generated {} embeddings of length {}.'.format(
+                len(embeddings), len(embeddings[0])))
 
         # Extract the query vector of interest.
         query_vector = embeddings[0]
 
         # Get nearest neighbors
         nns, distances = self.annoy_index.get_nns_by_vector(
-          query_vector, num_neighbors, search_k=-1, include_distances=True)
+            query_vector, num_neighbors, search_k=-1, include_distances=True)
 
         # Log the ids
         tf.logging.info('Nearest neighbor IDS: {}'.format(nns))

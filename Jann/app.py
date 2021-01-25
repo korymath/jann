@@ -1,14 +1,10 @@
 import random
-import Jann.utils as utils
 
-from flask import Flask
-from flask import request
-from flask import jsonify
-from flask import make_response
-from flask import render_template
 import flask_monitoringdashboard as dashboard
+import tensorflow.compat.v1 as tf  # type: ignore
+from flask import Flask, jsonify, make_response, render_template, request
 
-import tensorflow.compat.v1 as tf
+import Jann.utils as utils
 
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
@@ -24,7 +20,7 @@ sample_from_n_neighbors = 5
 # Buil the USE model
 data_path = 'data/CMDC/'
 model_name = '{}.txt.embedded.pkl_unique_strings.csv'.format(
-  data_key)
+    data_key)
 unique_strings_path = (data_path + model_name)
 
 # load the unique lines

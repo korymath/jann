@@ -1,7 +1,9 @@
 import os
-import sys
 import pickle
-import tensorflow.compat.v1 as tf
+import sys
+
+import tensorflow.compat.v1 as tf  # type: ignore
+
 import Jann.utils as utils
 
 tf.disable_v2_behavior()
@@ -12,24 +14,25 @@ def embed_lines(args):
     # Build the input message list
     try:
         lines, response_lines = utils.load_data(
-          args.infile, 'list', args.pairs)
+            args.infile, 'list', args.pairs)
     except FileNotFoundError as e:
         tf.logging.log(tf.logging.ERROR, e)
         sys.exit(0)
     tf.logging.info('{} lines in input file: {}'.format(
-      len(lines), args.infile))
+        len(lines), args.infile))
     if response_lines:
         tf.logging.info(
-          '{} response lines in input file: {}'.format(
-            len(response_lines), args.infile))
+            '{} response lines in input file: {}'.format(
+                len(response_lines), args.infile))
 
     # check if the file exists
     output_file_path = args.infile + '.embedded.pkl'
+    line_hash, line = None, None
     if os.path.isfile(output_file_path):
         # if it does, load it in
         tf.logging.info(
-          'Loading existing saved output file: {}'.format(
-            output_file_path))
+            'Loading existing saved output file: {}'.format(
+                output_file_path))
         with open(output_file_path, 'rb') as f:
             output_dict = pickle.load(f)
 
@@ -38,12 +41,13 @@ def embed_lines(args):
         unencoded_lines_responses = []
         for i, line in enumerate(lines):
             line_hash = utils.hashlib.md5(line.encode('utf-8')).hexdigest()
-        if line_hash not in output_dict.keys():
-            unencoded_lines.append(line)
-            if not response_lines:
-                unencoded_lines_responses.append(lines[i])
-            else:
-                unencoded_lines_responses.append(response_lines[i])
+        
+            if line_hash not in output_dict.keys():
+                unencoded_lines.append(line)
+                if not response_lines:
+                    unencoded_lines_responses.append(lines[i])
+                else:
+                    unencoded_lines_responses.append(response_lines[i])
     else:
         # make a new dataframe
         tf.logging.info(

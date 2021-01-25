@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 setup(
     name="Jann",
-    version="2.0.0",
+    version="3.0.0",
     description="Jann is a Nearest Neighbour retrieval-based chatbot.",
     author="Kory Mathewson",
     author_email="korymath@gmail.com",
@@ -18,3 +18,4 @@ setup(
         "pytest"
     ],
 )
+

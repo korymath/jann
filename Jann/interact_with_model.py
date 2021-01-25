@@ -1,5 +1,7 @@
 import sys
-import tensorflow.compat.v1 as tf
+
+import tensorflow.compat.v1 as tf  # type: ignore
+
 import Jann.utils as utils
 
 tf.disable_v2_behavior()
@@ -19,6 +21,8 @@ def interact_with_model(args, debug=False):
 
     # define the path of the nearest neighbor model to use
     annoy_index_path = data_path + '.ann'
+
+    gen_model_use = None
 
     # Load generative models from pickles to generate from scratch.
     try:

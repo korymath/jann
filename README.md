@@ -1,4 +1,5 @@
 # jann
+
 [![CircleCI](https://circleci.com/gh/korymath/jann.svg?style=svg)](https://circleci.com/gh/korymath/jann)
 [![codecov](https://codecov.io/gh/korymath/jann/branch/master/graph/badge.svg)](https://codecov.io/gh/korymath/jann)
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-376/)
@@ -16,7 +17,7 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 
 ## Install and configure requirements
 
-Note: `jann` development is tested with Python 3.7 on macOS 10.15.4 Catalina. Deployment is tested on Ubuntu.
+Note: `jann` development is tested with Python 3.8.6 on macOS 11.0. Deployment is tested on Ubuntu.
 
 To run `jann` on your local system or a server, you will need to perform the following installation steps.
 
@@ -28,7 +29,7 @@ To run `jann` on your local system or a server, you will need to perform the fol
 brew install wget
 
 # Configure and activate virtual environment
-python3.7 -m venv venv
+python3.8 -m venv venv
 source venv/bin/activate
 
 # Upgrade Pip
@@ -76,7 +77,7 @@ mv cornell\ movie-dialogs\ corpus/movie_lines.txt movie_lines.txt
 mv cornell\ movie-dialogs\ corpus/movie_conversations.txt movie_conversations.txt
 
 # Change direcory to jann's main directory
-cd ../..
+cd -
 ```
 
 As an example, we might use the first 50 lines of movie dialogue from the [Cornell Movie Dialog Corpus](http://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html).
@@ -112,6 +113,7 @@ cd Jann
 
 # Number of lines from input source to use
 export NUMTREES='100'
+
 # Number of neighbors to return
 export NUMNEIGHBORS='10'
 
@@ -119,13 +121,13 @@ export NUMNEIGHBORS='10'
 export INFILE="data/CMDC/all_lines_50.txt"
 
 # Embed the lines using the encoder (Universal Sentence Encoder)
-python embed_lines.py --infile=${INFILE} --verbose &&
+python embed_lines.py --infile=${INFILE} --verbose
 
 # Process the embeddings and save as unique strings and numpy array
-python process_embeddings.py --infile=${INFILE} --verbose &&
+python process_embeddings.py --infile=${INFILE} --verbose
 
 # Index the embeddings using an approximate nearest neighbor (annoy)
-python index_embeddings.py --infile=${INFILE} --verbose --num_trees=${NUMTREES} &&
+python index_embeddings.py --infile=${INFILE} --verbose --num_trees=${NUMTREES}
 
 # Build a simple command line interaction for model testing
 python interact_with_model.py --infile=${INFILE} --verbose --num_neighbors=${NUMNEIGHBORS}
@@ -137,12 +139,13 @@ For interaction with the model, the only files needed are the unique strings (`_
 
 ## Pairs
 
-Conversational dialogue is composed of sequences of utterances. The sequence can be seen as pairs of utterances: inputs and responses. Nearest neighbours to a given input will find neighbours which are semantically related to the input. By storing input<>response pairs, rather than only inputs, `jann` can respond with a response to similar inputs. This example is shown in `run_examples/run_CMDC_pairs.sh`.
+Conversational dialogue is composed of sequences of utterances. The sequence can be seen as pairs of utterances: inputs and responses.
+
+Nearest neighbours to a given input will find neighbours which are semantically related to the input. By storing input<>response pairs, rather than only inputs, `jann` can respond with a response to similar inputs. This example is shown in `run_examples/run_CMDC_pairs.sh`.
 
 ## Run Web Server
 
 `jann` is designed to run as a web service to be queried by a dialogue interface builder. For instance, `jann` is natively configured to be compatible with [Dialogflow Webhook Service](https://cloud.google.com/dialogflow/docs/fulfillment-webhook). The web service runs using the Flask micro-framework and uses the performance-oriented [gunicorn](https://gunicorn.org/) application server to launch the application with 4 workers.
-
 
 ```sh
 cd Jann
@@ -159,7 +162,7 @@ gunicorn --bind 0.0.0.0:8000 app:JANN -w 4
 It is helpful to see a Flask Monitoring dashboard to monitor statistics on the bot. There is a [Flask-MonitoringDashboard](https://flask-monitoringdashboard.readthedocs.io/en/v1.13.0/) which is already installed as part of Jann, see [Jann/app.py](https://github.com/korymath/jann/blob/4cf3cd8ff687f250f78c898f8de7420f29f868cc/Jann/app.py#L45
 ).
 
-To view the dashboard, navigate to http://0.0.0.0:8000/dashboard. The default user/pass is: `admin` / `admin`.
+To view the dashboard, navigate to <http://0.0.0.0:8000/dashboard>. The default user/pass is: `admin` / `admin`.
 
 ## Load / Lag Testing with Locust
 
@@ -183,6 +186,7 @@ curl --header "Content-Type: application/json" \
 ```
 
 Response:
+
 ```sh
 {"fulfillmentText":"Oh, come on, man. Tell me you wouldn't love it!"}
 ```
@@ -214,6 +218,7 @@ mkdir -p universal-sentence-encoder && tar -zxvf module_standard.tar.gz -C unive
 ## Annoy parameters
 
 There are two parameters for the Approximate Nearest Neighbour:
+
 * set `n_trees` as large as possible given the amount of memory you can afford,
 * set `search_k` as large as possible given the time constraints you have for the queries. This parameter is a interaction tradeoff between accuracy and speed.
 
@@ -230,11 +235,12 @@ sudo /etc/init.d/nginx start    # start nginx
 
 Then, you can reference a more in-depth guide [here](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html)
 
-You will need the uwsgi_params file, which is available in the nginx directory of the uWSGI distribution, or from https://github.com/nginx/nginx/blob/master/conf/uwsgi_params
+You will need the uwsgi_params file, which is available in the nginx directory of the uWSGI distribution, or from <ttps://github.com/nginx/nginx/blob/master/conf/uwsgi_params>
 
 Copy the following into a file on your server.
 
 `/etc/nginx/sites-available/JANN.conf`
+
 ```sh
 # JANN.conf
 
@@ -262,12 +268,12 @@ server {
 ```
 
 Then, we tell nginx how to refer to the server
-```
+
+```sh
 sudo ln -s ~/path/to/your/mysite/mysite_nginx.conf /etc/nginx/sites-enabled/
 sudo /etc/init.d/nginx restart
 uwsgi --socket :8001 -w wsgi:JANN
 ```
-
 
 ## Common Errors/Warnings and Solutions
 
@@ -275,35 +281,44 @@ uwsgi --socket :8001 -w wsgi:JANN
 /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/importlib/_bootstrap.py:205: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
   return f(*args, **kwds)
 ```
+
 Solution (for OSX 10.13):
+
 ```sh
 pip install --ignore-installed --upgrade https://github.com/lakshayg/tensorflow-build/releases/download/tf1.9.0-macos-py27-py36/tensorflow-1.9.0-cp36-cp36m-macosx_10_13_x86_64.whl
 ```
 
-### Error/Warning:
+### FileNotFoundError
+
 ```sh
 FileNotFoundError: [Errno 2] No such file or directory: 'data/CMDC/movie_lines.txt'
 ```
+
 Solution:
+
 ```sh
 Ensure that the input movie lines file is extracted to the correct path
 ```
 
-### Error/Warning
+### ValueError
+
 ```sh
 ValueError: Signature 'spm_path' is missing from meta graph.
 ```
 
-#### Solution:
+#### Solution
+
 Currently `jann` is configured to use the `universal-sentence-encoder-lite` module from TFHub as it is small, lightweight, and ready for rapid deployment. This module depends on the [SentencePiece](https://github.com/google/sentencepiece) library and the SentencePiece model published with the module.
 
 You will need to make some minor code adjustments to use the heaviery modules (such as [universal-sentence-encoder](https://alpha.tfhub.dev/google/universal-sentence-encoder)
 and [universal-sentence-encoder-large](https://alpha.tfhub.dev/google/universal-sentence-encoder-large).
 
 ## Start Contributing
+
 The guide for contributors can be found [here](https://github.com/korymath/jann/blob/master/CONTRIBUTING.md). It covers everything you need to know to start contributing to `jann`.
 
 ## References
+
 * [Universal Sentence Encoder on TensorFlow Hub](https://tfhub.dev/google/universal-sentence-encoder-lite/2)
 * [Cer, Daniel, et al. 'Universal sentence encoder.' arXiv preprint arXiv:1803.11175 (2018).](https://arxiv.org/abs/1803.11175)
 * [Danescu-Niculescu-Mizil, Cristian, and Lillian Lee. 'Chameleons in imagined conversations: A new approach to understanding coordination of linguistic style in dialogs.' Proceedings of the 2nd Workshop on Cognitive Modeling and Computational Linguistics. Association for Computational Linguistics, 2011.](https://dl.acm.org/citation.cfm?id=2021105)

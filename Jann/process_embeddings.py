@@ -1,6 +1,8 @@
 import sys
+
 import numpy as np
-import tensorflow.compat.v1 as tf
+import tensorflow.compat.v1 as tf  # type: ignore
+
 import Jann.utils as utils
 
 tf.disable_v2_behavior()
@@ -12,8 +14,8 @@ def process_embeddings(args):
     path_to_embeddings = args.infile + '.embedded.pkl'
     embeddings, _ = utils.load_data(path_to_embeddings, 'dict')
     tf.logging.info(
-      '{} lines in embeddings: {}'.format(len(embeddings.keys()),
-                                          path_to_embeddings))
+        '{} lines in embeddings: {}'.format(len(embeddings.keys()),
+                                            path_to_embeddings))
 
     all_embeddings = []
     with open(path_to_embeddings + '_unique_strings.csv', 'wb') as outfile:
@@ -35,7 +37,7 @@ def process_embeddings(args):
 
     # Log the embedding shape
     tf.logging.info(
-      'Embedings shape {}'.format(all_embeddings_np.shape))
+        'Embedings shape {}'.format(all_embeddings_np.shape))
 
     return True
 

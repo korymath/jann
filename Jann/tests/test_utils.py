@@ -1,17 +1,13 @@
 import os
 
-from Jann.utils import load_data
-from Jann.utils import load_lines
-from Jann.utils import extract_pairs
-from Jann.utils import parse_arguments
-from Jann.utils import load_conversations
-from Jann.utils import extract_pairs_from_lines
-
+from Jann.utils import (extract_pairs, extract_pairs_from_lines,
+                        load_conversations, load_data, load_lines,
+                        parse_arguments)
 
 FIXTURE_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
     'test_files',
-    )
+)
 
 test_lines = os.path.join(FIXTURE_DIR, 'test_lines.txt')
 test_pairs = os.path.join(FIXTURE_DIR, 'test_pairs.txt')

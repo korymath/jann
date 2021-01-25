@@ -1,8 +1,10 @@
-import os
 import csv
+import os
 import sys
+
 import numpy as np
-import tensorflow.compat.v1 as tf
+import tensorflow.compat.v1 as tf  # type: ignore
+
 import Jann.utils as utils
 
 tf.disable_v2_behavior()
@@ -17,9 +19,9 @@ def process_cornell_data(args):
     movie_conversations_file = os.path.join(args.infile_path,
                                             'movie_conversations.txt')
     tf.logging.info(
-      'CMDC movie_lines_path: {}'.format(movie_lines_file))
+        'CMDC movie_lines_path: {}'.format(movie_lines_file))
     tf.logging.info(
-      'CMDC movie_converstions_path: {}'.format(movie_conversations_file))
+        'CMDC movie_converstions_path: {}'.format(movie_conversations_file))
 
     if not args.pairs:
         tf.logging.info(
@@ -41,17 +43,17 @@ def process_cornell_data(args):
         with open(args.outfile, 'w', encoding='iso-8859-1') as f:
             if args.num_lines != 0:
                 for item in np.random.choice(
-                  lines, args.num_lines, replace=False):
+                        lines, args.num_lines, replace=False):
                     f.write("%s\n" % item)
             else:
                 for item in lines:
                     f.write("%s\n" % item)
             tf.logging.info(
-              'Wrote {} lines to {}.'.format(
-                args.num_lines, args.outfile))
+                'Wrote {} lines to {}.'.format(
+                    args.num_lines, args.outfile))
     else:
         tf.logging.info(
-          "Selecting and saving {} random pairs...".format(args.num_lines))
+            "Selecting and saving {} random pairs...".format(args.num_lines))
 
         movie_lines_fields = ["lineID", "characterID",
                               "movieID", "character", "text"]
@@ -65,19 +67,19 @@ def process_cornell_data(args):
 
         # load the conversations
         conversations = utils.load_conversations(
-          movie_conversations_file, lines, movie_conversations_fields)
+            movie_conversations_file, lines, movie_conversations_fields)
         tf.logging.info("Loaded {} conversations: {}".format(
-          len(conversations), movie_conversations_file))
+            len(conversations), movie_conversations_file))
 
         with open(args.outfile, 'w', encoding='iso-8859-1') as outputfile:
             writer = csv.writer(outputfile, delimiter=args.delimiter)
             collected_pairs = utils.extract_pairs(conversations)
             tf.logging.info(
                 'Total of {} pairs'.format(len(collected_pairs)))
-            if (int(args.num_lines) != 0 and 
-                (int(args.num_lines) < len(collected_pairs))):
+            if (int(args.num_lines) != 0 and
+                    (int(args.num_lines) < len(collected_pairs))):
                 random_idxs = np.random.choice(
-                  len(collected_pairs), args.num_lines, replace=False)
+                    len(collected_pairs), args.num_lines, replace=False)
                 for random_id in random_idxs:
                     pair = collected_pairs[random_id]
                     writer.writerow(pair)
