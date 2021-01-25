@@ -151,8 +151,10 @@ Nearest neighbours to a given input will find neighbours which are semantically 
 cd Jann
 # run the pairs set up and test the interaction
 ./run_examples/run_CMDC_pairs.sh
+
 # start development server
 python app.py
+
 # serve the pairs model with gunicorn and 4 workers
 gunicorn --bind 0.0.0.0:8000 app:JANN -w 4
 ```
@@ -306,7 +308,7 @@ Ensure that the input movie lines file is extracted to the correct path
 ValueError: Signature 'spm_path' is missing from meta graph.
 ```
 
-#### Solution
+Solution
 
 Currently `jann` is configured to use the `universal-sentence-encoder-lite` module from TFHub as it is small, lightweight, and ready for rapid deployment. This module depends on the [SentencePiece](https://github.com/google/sentencepiece) library and the SentencePiece model published with the module.
 
