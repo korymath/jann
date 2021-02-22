@@ -9,8 +9,12 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
 
+# Dataset-specific paths
 num_samples = 0
 data_key = 'all_lines_{}_pairs'.format(num_samples)
+data_path = 'data/CMDC/'
+# data_key = 'all_lines_10000'
+# data_path = 'data/novel-first-lines-dataset/'
 
 # Do we want to return the nearest neighbor?
 # sample_from_n_neighbors = 1
@@ -18,7 +22,6 @@ data_key = 'all_lines_{}_pairs'.format(num_samples)
 sample_from_n_neighbors = 5
 
 # Buil the USE model
-data_path = 'data/CMDC/'
 model_name = '{}.txt.embedded.pkl_unique_strings.csv'.format(
     data_key)
 unique_strings_path = (data_path + model_name)
@@ -70,6 +73,7 @@ def model_reply():
     # Initialize a blank message and blank response
     message = None
     resp = None
+    return_all_samples = False
 
     # Log the request
     tf.logging.info(request)
@@ -79,13 +83,18 @@ def model_reply():
         message = request.args.get('msg')
         tf.logging.info('message from msg argument: {}'.format(message))
     else:
-        # This is a dialogflow request, follow the Dialogflow protocol
-        data_json = request.get_json(silent=False, force=True)
-        tf.logging.debug('JSON Data: {}'.format(data_json))
-        try:
-            message = data_json["queryResult"]["queryText"]
-        except TypeError as e:
-            tf.logging.debug(e)
+        if 'msgs' in request.args:
+            message = request.args.get('msgs')
+            tf.logging.info('message from msgs argument: {}'.format(message))
+            return_all_samples = True
+        else:
+            # This is a dialogflow request, follow the Dialogflow protocol
+            data_json = request.get_json(silent=False, force=True)
+            tf.logging.debug('JSON Data: {}'.format(data_json))
+            try:
+                message = data_json["queryResult"]["queryText"]
+            except TypeError as e:
+                tf.logging.debug(e)
 
     # If the message exists, then use it to generate an inference
     if message:
@@ -97,11 +106,16 @@ def model_reply():
                     distance,
                     unique_strings[nn].split('\t')))  # args.delimiter
 
-            # Sample from the closest N neighbors
-            neighbor_sample = random.choice(nns[:sample_from_n_neighbors])
+            if return_all_samples:
+                # Return all the closest N neighbors
+                neighbor_sample = nns[:sample_from_n_neighbors]
+            else:
+                # Sample from the closest N neighbors
+                neighbor_sample = [random.choice(nns[:sample_from_n_neighbors])]
 
             # recall the neighbor is index 0 and the response is index 1
-            gen_resp = unique_strings[neighbor_sample].split('\t')[1]
+            gen_resp = '\t'.join([unique_strings[idx].split('\t')[1]
+                                  for idx in neighbor_sample])
 
             # Build the response as the fulfillment text
             resp = {'fulfillmentText': gen_resp}
