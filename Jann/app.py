@@ -3,11 +3,15 @@ import random
 import flask_monitoringdashboard as dashboard
 import tensorflow.compat.v1 as tf  # type: ignore
 from flask import Flask, jsonify, make_response, render_template, request
+from flask_cors import CORS, cross_origin
 
 import Jann.utils as utils
 
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
+
+# Port on which we query
+port = 5000
 
 # Dataset-specific paths
 num_samples = 0
@@ -48,25 +52,29 @@ except (OSError, IOError) as e:
     tf.logging.error(e)
     tf.logging.error('Error building generative model.')
 
-# Start the app JANN.
+# Start the app JANN, and wrap it in CORS handler
 JANN = Flask(__name__)
+CORS(JANN, support_credentials=True)
 JANN.config['SECRET_KEY'] = 'IAMASUPERSECRETKEYTHATNOONECANGUESS'
 dashboard.bind(JANN)
 
 
 @JANN.errorhandler(404)
+@cross_origin(supports_credentials=True)
 def not_found(error):
     """Flask route for 404 errors."""
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @JANN.route('/')
+@cross_origin(supports_credentials=True)
 def index():
     return render_template('index.html',
                            title='Home')
 
 
 @JANN.route('/model_inference', methods=['POST', 'GET'])
+@cross_origin(supports_credentials=True)
 def model_reply():
     """Flask route to respond to inference request."""
 
@@ -137,4 +145,5 @@ if __name__ == '__main__':
     JANN.run(
         debug=False,
         host='0.0.0.0',
+        port=port,
         use_reloader=False)
