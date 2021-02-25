@@ -1,8 +1,7 @@
 # jann
 
 [![CircleCI](https://circleci.com/gh/korymath/jann.svg?style=svg)](https://circleci.com/gh/korymath/jann)
-[![codecov](https://codecov.io/gh/korymath/jann/branch/master/graph/badge.svg)](https://codecov.io/gh/korymath/jann)
-[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-376/)
+[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-386/)
 [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 Hi. I am `jann`. I am a retrieval-based chatbot. I would make a great baseline.
@@ -17,7 +16,8 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 
 ## Install and configure requirements
 
-Note: `jann` development is tested with Python 3.8.6 on macOS 11.0. Deployment is tested on Ubuntu.
+Note: `jann` development is tested with Python 3.8.6 on macOS 11.2. 
+Deployment is tested on Ubuntu.
 
 To run `jann` on your local system or a server, you will need to perform the following installation steps.
 
@@ -33,7 +33,7 @@ python3.8 -m venv venv
 source venv/bin/activate
 
 # Upgrade Pip
-pip install --upgrade pip
+pip install --upgrade pip setuptools
 
 # Install requirements
 pip install -r requirements.txt
@@ -48,15 +48,10 @@ export TFHUB_CACHE_DIR=Jann/data/module
 mkdir -p ${TFHUB_CACHE_DIR}
 
 # Download and unpack the Universal Sentence Encoder Lite model (~25 MB)
-if [ ! -f ${TFHUB_CACHE_DIR}/module_lite.tar.gz ]; then
-  echo "No module found, downloading..."
-  wget 'https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed' -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
-  cd ${TFHUB_CACHE_DIR}
-  mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2
-  cd -
-else
-  echo "Module found!"
-fi
+wget "https://tfhub.dev/google/universal-sentence-encoder-lite/2?tf-hub-format=compressed" -O ${TFHUB_CACHE_DIR}/module_lite.tar.gz
+cd ${TFHUB_CACHE_DIR};
+mkdir -p universal-sentence-encoder-lite-2 && tar -zxvf module_lite.tar.gz -C universal-sentence-encoder-lite-2;
+cd -
 ```
 
 ### Download Cornell Movie Dialog Database
@@ -155,7 +150,7 @@ cd Jann
 # start development server
 python app.py
 
-# serve the pairs model with gunicorn and 4 workers
+# or serve the pairs model with gunicorn and 4 workers
 gunicorn --bind 0.0.0.0:8000 app:JANN -w 4
 ```
 
