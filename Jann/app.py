@@ -1,3 +1,4 @@
+import argparse
 import random
 
 import flask_monitoringdashboard as dashboard
@@ -10,25 +11,26 @@ import Jann.utils as utils
 tf.disable_v2_behavior()
 tf.logging.set_verbosity(tf.logging.DEBUG)
 
-# Port on which we query
-port = 5000
 
-# Dataset-specific paths
-num_samples = 0
-data_key = 'all_lines_{}_pairs'.format(num_samples)
-data_path = 'data/CMDC/'
-# data_key = 'all_lines_10000'
-# data_path = 'data/novel-first-lines-dataset/'
+# Parse the command line arguments
+parser = argparse.ArgumentParser(description='Jann server')
+parser.add_argument('--port', type=int, default=5000, help='Port of the server.')
+parser.add_argument('--neighbors', type=int, default=5,
+                    help='Number of neighbors from which to sample from.')
+parser.add_argument('--data_key', default='all_lines_50',
+                    help='Name of the data_key file.')
+parser.add_argument('--data_path', default='data/CMDC/',
+                    help='Location of the TF Annoy model.')
+opts, unknown = parser.parse_known_args()
+print(opts)
 
-# Do we want to return the nearest neighbor?
-# sample_from_n_neighbors = 1
-# or sample from the nearest N neighbors?
-sample_from_n_neighbors = 5
+
+# Do we want to return the nearest neighbor? Or sample from several ones?
+sample_from_n_neighbors = opts.neighbors
 
 # Buil the USE model
-model_name = '{}.txt.embedded.pkl_unique_strings.csv'.format(
-    data_key)
-unique_strings_path = (data_path + model_name)
+model_name = '{}.txt.embedded.pkl_unique_strings.csv'.format(opts.data_key)
+unique_strings_path = (opts.data_path + model_name)
 
 # load the unique lines
 with open(unique_strings_path) as f:
@@ -36,7 +38,7 @@ with open(unique_strings_path) as f:
 tf.logging.info('Loaded {} unique strings'.format(len(unique_strings)))
 
 # define the path of the nearest neighbor model to use
-annoy_index_path = data_path + '{}.txt.ann'.format(data_key)
+annoy_index_path = opts.data_path + '{}.txt.ann'.format(opts.data_key)
 
 # Load generative models from pickles to generate from scratch.
 try:
@@ -145,5 +147,5 @@ if __name__ == '__main__':
     JANN.run(
         debug=False,
         host='0.0.0.0',
-        port=port,
+        port=opts.port,
         use_reloader=False)
