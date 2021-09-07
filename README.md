@@ -16,8 +16,7 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 
 ## Install and configure requirements
 
-Note: `jann` development is tested with Python 3.8.6 on macOS 11.5.2. 
-Deployment is tested on Ubuntu.
+Note: `jann` development is tested with Python 3.8.6 on macOS 11.5.2 and Ubuntu 20.04.
 
 To run `jann` on your local system or a server, you will need to perform the following installation steps.
 
@@ -31,6 +30,9 @@ brew install wget
 # Configure and activate virtual environment
 python3.8 -m venv venv
 source venv/bin/activate
+
+python --version
+# Ensure Python 3.8.10
 
 # Upgrade Pip
 pip install --upgrade pip setuptools
@@ -84,6 +86,8 @@ You can set the number of lines from the corpus you want to use by changing the 
 ```sh
 pytest --cov-report=xml --cov-report=html --cov=Jann
 ```
+
+You should see all the tests passing.
 
 ## (simple) Run Basic Example
 
@@ -229,18 +233,43 @@ You will need to configure your server with the necessary software:
 
 ```sh
 sudo apt update
-sudo apt install python3-pip python3-dev python3-venv build-essential libssl-dev libffi-dev python3-setuptools
+sudo apt -y upgrade
+sudo apt install unzip python3-pip python3-dev python3-venv build-essential libssl-dev libffi-dev python3-setuptools
 sudo apt-get install nginx
+git clone https://github.com/korymath/jann
+# and follow the installation and configuration steps above
 sudo /etc/init.d/nginx start    # start nginx
 ```
 
 Then, you can reference a more in-depth guide [here](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html).
 
-You will need the uwsgi_params file, which is available in the nginx directory of the uWSGI distribution, or from <ttps://github.com/nginx/nginx/blob/master/conf/uwsgi_params>
+You will need the uwsgi_params file, which is available in the nginx directory of the uWSGI distribution, or from [the nginx GitHub repository](https://github.com/nginx/nginx/blob/master/conf/uwsgi_params).
 
-Copy the following into a file on your server.
+```sh
 
-`/etc/nginx/sites-available/JANN.conf`
+uwsgi_param  QUERY_STRING       $query_string;
+uwsgi_param  REQUEST_METHOD     $request_method;
+uwsgi_param  CONTENT_TYPE       $content_type;
+uwsgi_param  CONTENT_LENGTH     $content_length;
+
+uwsgi_param  REQUEST_URI        $request_uri;
+uwsgi_param  PATH_INFO          $document_uri;
+uwsgi_param  DOCUMENT_ROOT      $document_root;
+uwsgi_param  SERVER_PROTOCOL    $server_protocol;
+uwsgi_param  REQUEST_SCHEME     $scheme;
+uwsgi_param  HTTPS              $https if_not_empty;
+
+uwsgi_param  REMOTE_ADDR        $remote_addr;
+uwsgi_param  REMOTE_PORT        $remote_port;
+uwsgi_param  SERVER_PORT        $server_port;
+uwsgi_param  SERVER_NAME        $server_name;
+```
+
+Copy it into your project directory (e.g. `/home/${USER}/jann/uwsgi_params;`).
+In a moment we will tell nginx to refer to it.
+
+Then, copy the following into a file on your server, 
+named: `/etc/nginx/sites-available/JANN.conf`
 
 ```sh
 # JANN.conf
@@ -256,7 +285,7 @@ server {
     # the port your site will be served on
     listen      8000;
     # the domain name it will serve for
-    server_name IP; # substitute your machine's IP address or FQDN
+    server_name jann.app; # substitute your machine's IP address or FQDN
     charset     utf-8;
 
     # Finally, send all non-media requests to the Django server.
@@ -271,8 +300,11 @@ server {
 Then, we tell nginx how to refer to the server
 
 ```sh
-sudo ln -s ~/path/to/your/mysite/mysite_nginx.conf /etc/nginx/sites-enabled/
+# link the site configuration to nginx enabled sites 
+sudo ln -s /etc/nginx/sites-available/JANN.conf /etc/nginx/sites-enabled/
+# restart nginx
 sudo /etc/init.d/nginx restart
+# serve JANN on uwsgi
 uwsgi --socket :8001 -w wsgi:JANN
 ```
 

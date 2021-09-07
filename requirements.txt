@@ -7,3 +7,6 @@ annoy
 tqdm
 gunicorn
 pytest
+uwsgi
+pytest-cov
+locust
