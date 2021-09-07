@@ -245,7 +245,7 @@ git clone https://github.com/korymath/jann
 sudo /etc/init.d/nginx start    # start nginx
 ```
 
-Then, you can reference a more in-depth guide [here](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html).
+Then, you can reference a more in-depth guide [here](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html). And here is a walkthrough on how to configure [nginx on GCP](https://pythonise.com/series/learning-flask/deploy-a-flask-app-nginx-uwsgi-virtual-machine).
 
 You will need the uwsgi_params file, which is available in the nginx directory of the uWSGI distribution, or from [the nginx GitHub repository](https://github.com/nginx/nginx/blob/master/conf/uwsgi_params).
 
@@ -272,31 +272,54 @@ uwsgi_param  SERVER_NAME        $server_name;
 Copy it into your project directory (e.g. `/home/${USER}/jann/uwsgi_params`).
 In a moment we will tell nginx to refer to it.
 
+We will serve our application over HTTP on port 80, so we need to enable it:
+
+```sh
+sudo ufw allow 'Nginx HTTP'
+```
+
+This will allow HTTP traffic on port 80, the default HTTP port.
+
+We can check the rule has been applied with:
+
+```sh
+sudo ufw status
+
+# Status: active
+# To                         Action      From
+# --                         ------      ----
+# Nginx HTTP                 ALLOW       Anywhere                  
+# Nginx HTTP (v6)            ALLOW       Anywhere (v6) 
+```
+
+Make a Systemd unit file:
+
+```sh
+[Unit]
+Description=JANN as a well served Flask application.
+After=network.target
+[Service]
+User=korymath
+Group=www-data
+WorkingDirectory=/home/korymath/jann/Jann
+Environment="PATH=/home/korymath/jann/venv/bin"
+ExecStart=/home/korymath/jann/venv/bin/uwsgi --ini wsgi.ini
+[Install]
+WantedBy=multi-user.target
+```
+
+
 Then, copy the following into a file on your server, 
 named: `/etc/nginx/sites-available/JANN.conf`
 
 ```sh
 # JANN.conf
-
-# the upstream component nginx needs to connect to
-upstream flask {
-    # for a web port socket
-    server 127.0.0.1:8001;
-}
-
-# configuration of the server
 server {
-    # the port your site will be served on
-    listen      8000;
-    # the domain name it will serve for
-    server_name jann.app; # substitute your machine's IP address or FQDN
-    charset     utf-8;
-
-    # Finally, send all non-media requests to the Django server.
+    listen      80;
+    server_name 35.209.230.155;
     location / {
-        uwsgi_pass  flask;
-        # the uwsgi_params file you installed
         include     /home/korymath/jann/uwsgi_params;
+        uwsgi_pass unix:/home/korymath/jann/Jann/jann.sock;
     }
 }
 ```
@@ -307,9 +330,9 @@ Then, we tell nginx how to refer to the server
 # link the site configuration to nginx enabled sites 
 sudo ln -s /etc/nginx/sites-available/JANN.conf /etc/nginx/sites-enabled/
 # restart nginx
-sudo /etc/init.d/nginx restart
-# serve JANN on uwsgi
-uwsgi --socket :8001 -w wsgi:JANN
+sudo systemctl restart nginx
+# restart jann
+sudo systemctl restart jann
 ```
 
 ## Common Errors/Warnings and Solutions
