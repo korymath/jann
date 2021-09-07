@@ -9,20 +9,26 @@ from flask_cors import CORS, cross_origin
 import Jann.utils as utils
 
 tf.disable_v2_behavior()
-tf.logging.set_verbosity(tf.logging.DEBUG)
+tf.logging.set_verbosity(tf.logging.INFO)
 
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(description='Jann server')
-parser.add_argument('--port', type=int, default=5000, help='Port of the server.')
+parser.add_argument('--port', type=int, default=5000, 
+                    help='Port of the server.')
 parser.add_argument('--neighbors', type=int, default=5,
                     help='Number of neighbors from which to sample from.')
-parser.add_argument('--data_key', default='all_lines_50',
+parser.add_argument('--data_key', default='all_lines_0_pairs',
                     help='Name of the data_key file.')
 parser.add_argument('--data_path', default='data/CMDC/',
-                    help='Location of the TF Annoy model.')
+                    help='Location of the TF Annoy model and Data.')
+parser.add_argument('--no_pairs',
+                    dest='no_pairs',
+                    help="Flag to disable input<>response pairs mode.",
+                    action='store_true',
+                    default=False)
 opts, unknown = parser.parse_known_args()
-print(opts)
+tf.logging.info(opts)
 
 
 # Do we want to return the nearest neighbor? Or sample from several ones?
@@ -123,9 +129,15 @@ def model_reply():
                 # Sample from the closest N neighbors
                 neighbor_sample = [random.choice(nns[:sample_from_n_neighbors])]
 
-            # recall the neighbor is index 0 and the response is index 1
-            gen_resp = '\t'.join([unique_strings[idx].split('\t')[1]
-                                  for idx in neighbor_sample])
+            # handle both the pairs and no pairs cases
+            if not opts.no_pairs:
+                # neighbor is index 0 and the response is index 1
+                gen_resp = '\t'.join([unique_strings[idx].split('\t')[1]
+                                    for idx in neighbor_sample])
+            else:
+                # otherwise, just take the first line
+                gen_resp = '\t'.join([unique_strings[idx].split('\t')[0]
+                                      for idx in neighbor_sample])
 
             # Build the response as the fulfillment text
             resp = {'fulfillmentText': gen_resp}

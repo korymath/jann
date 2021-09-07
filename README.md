@@ -144,8 +144,12 @@ Nearest neighbours to a given input will find neighbours which are semantically 
 
 ```sh
 cd Jann
+
 # run the pairs set up and test the interaction
 ./run_examples/run_CMDC_pairs.sh
+
+# pairs set up will write files needed for web server deployment
+# default data_key is all_lines_0
 
 # start development server
 python app.py
@@ -230,7 +234,7 @@ sudo apt-get install nginx
 sudo /etc/init.d/nginx start    # start nginx
 ```
 
-Then, you can reference a more in-depth guide [here](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html)
+Then, you can reference a more in-depth guide [here](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html).
 
 You will need the uwsgi_params file, which is available in the nginx directory of the uWSGI distribution, or from <ttps://github.com/nginx/nginx/blob/master/conf/uwsgi_params>
 
