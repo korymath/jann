@@ -16,7 +16,7 @@ The goal of `jann` is to explicitly describes each step of the process of buildi
 
 ## Install and configure requirements
 
-Note: `jann` development is tested with Python 3.8.6 on macOS 11.2. 
+Note: `jann` development is tested with Python 3.8.6 on macOS 11.5.2. 
 Deployment is tested on Ubuntu.
 
 To run `jann` on your local system or a server, you will need to perform the following installation steps.
