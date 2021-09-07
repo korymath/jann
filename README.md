@@ -134,7 +134,11 @@ python interact_with_model.py --infile=${INFILE} --verbose --num_neighbors=${NUM
 
 ## Interaction
 
-For interaction with the model, the only files needed are the unique strings (`_unique_strings.csv`) and the Annoy index (`.ann`) file. With the unique strings and the index file you can build a basic interaction. This is demonstrated in the `interact_with_model.py` file.
+For interaction with the model, the only files needed are the unique strings (`_unique_strings.csv`) and the Annoy index (`.ann`) file. 
+
+With the unique strings and the index file you can build a basic interaction. 
+
+This is demonstrated in the `interact_with_model.py` file.
 
 ## Pairs
 
@@ -265,7 +269,7 @@ uwsgi_param  SERVER_PORT        $server_port;
 uwsgi_param  SERVER_NAME        $server_name;
 ```
 
-Copy it into your project directory (e.g. `/home/${USER}/jann/uwsgi_params;`).
+Copy it into your project directory (e.g. `/home/${USER}/jann/uwsgi_params`).
 In a moment we will tell nginx to refer to it.
 
 Then, copy the following into a file on your server, 
@@ -292,7 +296,7 @@ server {
     location / {
         uwsgi_pass  flask;
         # the uwsgi_params file you installed
-        include     /home/${USER}/jann/uwsgi_params;
+        include     /home/korymath/jann/uwsgi_params;
     }
 }
 ```
