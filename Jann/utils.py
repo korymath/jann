@@ -289,7 +289,9 @@ class GenModelUSE(object):
         self.annoy_index = AnnoyIndex(512, metric='angular')
 
         # super fast, will just mmap the file
+        tf.logging.info(f'Loading annoy index: {self.annoy_index_path}')
         self.annoy_index.load(self.annoy_index_path)
+        tf.logging.info(f'Index loaded!')
 
         g = tf.Graph()
         with g.as_default():

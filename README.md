@@ -227,7 +227,7 @@ There are two parameters for the Approximate Nearest Neighbour:
 * set `n_trees` as large as possible given the amount of memory you can afford,
 * set `search_k` as large as possible given the time constraints you have for the queries. This parameter is a interaction tradeoff between accuracy and speed.
 
-## Run details for cloud serving (e.g. Digital Ocean) using nginx and uwsgi
+## Run details for GCP serving using nginx and uwsgi
 
 You will need to configure your server with the necessary software:
 
